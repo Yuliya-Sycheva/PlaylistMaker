@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="primary_text_size_22sp">22sp</dimen>
+    <dimen name="around_button_16dp">16dp</dimen>
+    <dimen name="icon_padding_8dp">8dp</dimen>
+    <dimen name="panel_header_4dp">4dp</dimen>
+
+    <dimen name="settings_text_size_16sp">16sp</dimen>
+    <dimen name="text_left_16dp">16dp</dimen>
+    <dimen name="text_top_21dp">21dp</dimen>
+
+</resources>
