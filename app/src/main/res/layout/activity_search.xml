@@ -12,6 +12,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:gravity="center"
-        android:text="Поиск"/>
+        android:text="@string/search"/>
 
 </FrameLayout>
