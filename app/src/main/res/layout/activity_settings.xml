@@ -1,82 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:theme="@style/Theme.PlaylistMaker"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="?attr/colorPrimary"
     android:orientation="vertical">
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/panel_header_4dp"
-        android:layout_marginVertical="@dimen/panel_header_4dp"
-        android:layout_marginRight="52dp"
-        android:orientation="horizontal">
+        style="@style/LayoutOfPanelHeader">
 
         <ImageView
             android:id="@+id/back"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:padding="@dimen/icon_padding_16dp"
-            android:src="@drawable/vector"
-            app:iconTint="@color/black" />
+            style="@style/ImageViewBackStyle" />
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingLeft="12sp"
-            android:paddingTop="10sp"
+            style="@style/TextOfPanelHeaderStyle"
             android:paddingRight="86sp"
-            android:paddingBottom="12sp"
-            android:text="@string/settings"
-            android:textColor="@color/black"
-            android:textSize="@dimen/primary_text_size_22sp" />
+            android:text="@string/settings" />
     </LinearLayout>
 
     <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        style="@style/LayoutOfSettingsActivityStyle"
         android:layout_marginTop="24dp">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingStart="@dimen/text_left_16sp"
-            android:paddingVertical="@dimen/text_top_21sp"
-            android:text="@string/dark_theme"
-            android:textColor="@color/black2"
-            android:textSize="@dimen/settings_text_size_16sp" />
+            style="@style/TextOfSettingsActivityStyle"
+            android:text="@string/dark_theme" />
 
         <androidx.appcompat.widget.SwitchCompat
             android:id="@+id/switch_compat"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end"
+            style="@style/IconsOfSettingsActivityStyle"
+            app:thumbTint="?attr/colorSwitchThumbNormal"
+            app:trackTint="?attr/colorSecondaryVariant"
+            android:layout_width="61dp"
             android:checked="false"
+            android:paddingHorizontal="@dimen/icon_padding_16dp"
             android:paddingVertical="@dimen/icon_padding_top_22dp"
-            android:paddingHorizontal="16dp"
             app:showText="false" />
 
     </FrameLayout>
 
     <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        style="@style/LayoutOfSettingsActivityStyle">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:paddingStart="@dimen/text_left_16sp"
-            android:paddingVertical="@dimen/text_top_21sp"
-            android:text="@string/share_app"
-            android:textColor="@color/black2"
-            android:textSize="@dimen/settings_text_size_16sp" />
+            style="@style/TextOfSettingsActivityStyle"
+            android:text="@string/share_app" />
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_gravity="end"
+            android:id="@+id/share"
+            style="@style/IconsOfSettingsActivityStyle"
             android:paddingLeft="@dimen/icon_padding_12dp"
             android:paddingTop="@dimen/icon_padding_top_22dp"
             android:paddingRight="@dimen/icon_padding_16dp"
@@ -84,24 +58,16 @@
             android:src="@drawable/share" />
     </FrameLayout>
 
-
     <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        style="@style/LayoutOfSettingsActivityStyle">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:paddingStart="@dimen/text_left_16sp"
-            android:paddingVertical="@dimen/text_top_21sp"
-            android:text="@string/write_to_support"
-            android:textColor="@color/black2"
-            android:textSize="@dimen/settings_text_size_16sp" />
+            style="@style/TextOfSettingsActivityStyle"
+            android:text="@string/write_to_support" />
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_gravity="end"
+            android:id="@+id/support"
+            style="@style/IconsOfSettingsActivityStyle"
             android:paddingLeft="10dp"
             android:paddingTop="@dimen/icon_padding_top_22dp"
             android:paddingRight="14dp"
@@ -110,22 +76,15 @@
     </FrameLayout>
 
     <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        style="@style/LayoutOfSettingsActivityStyle">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:paddingStart="@dimen/text_left_16sp"
-            android:paddingVertical="@dimen/text_top_21sp"
-            android:text="@string/terms_of_use"
-            android:textColor="@color/black2"
-            android:textSize="@dimen/settings_text_size_16sp" />
+            style="@style/TextOfSettingsActivityStyle"
+            android:text="@string/terms_of_use" />
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_gravity="end"
+            android:id="@+id/termsOfViews"
+            style="@style/IconsOfSettingsActivityStyle"
             android:paddingLeft="@dimen/icon_padding_16dp"
             android:paddingTop="24dp"
             android:paddingRight="20dp"
