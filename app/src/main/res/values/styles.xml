@@ -37,11 +37,6 @@
         <item name="tint">?attr/colorOnSecondary</item>
     </style>
 
-    <style name="LayoutOfSettingsActivityStyle">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-    </style>
-
     <style name="LayoutOfPanelHeader">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>

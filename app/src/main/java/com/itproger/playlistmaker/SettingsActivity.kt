@@ -25,12 +25,16 @@ class SettingsActivity : AppCompatActivity() {
 
         val imageSupport = findViewById<ImageView>(R.id.support)
         imageSupport.setOnClickListener {
-            val supportIntent = Intent(Intent.ACTION_SENDTO)
-            supportIntent.data = Uri.parse("mailto:")
-            supportIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.support_text))
-            supportIntent.putExtra(Intent.EXTRA_EMAIL, arrayOf(getString(R.string.support_email)))
-            supportIntent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.support_subject))
-            startActivity(supportIntent)
+            Intent(Intent.ACTION_SENDTO).apply {
+                data = Uri.parse("mailto:")
+                putExtra(Intent.EXTRA_TEXT, getString(R.string.support_text))
+                putExtra(
+                    Intent.EXTRA_EMAIL,
+                    arrayOf(getString(R.string.support_email))
+                )
+                putExtra(Intent.EXTRA_SUBJECT, getString(R.string.support_subject))
+                startActivity(this)
+            }
         }
 
         val imageShare = findViewById<ImageView>(R.id.share)

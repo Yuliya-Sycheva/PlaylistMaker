@@ -21,7 +21,8 @@
     </LinearLayout>
 
     <FrameLayout
-        style="@style/LayoutOfSettingsActivityStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginTop="24dp">
 
         <TextView
@@ -42,7 +43,8 @@
     </FrameLayout>
 
     <FrameLayout
-        style="@style/LayoutOfSettingsActivityStyle">
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
         <TextView
             style="@style/TextOfSettingsActivityStyle"
@@ -59,7 +61,8 @@
     </FrameLayout>
 
     <FrameLayout
-        style="@style/LayoutOfSettingsActivityStyle">
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
         <TextView
             style="@style/TextOfSettingsActivityStyle"
@@ -76,7 +79,8 @@
     </FrameLayout>
 
     <FrameLayout
-        style="@style/LayoutOfSettingsActivityStyle">
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
         <TextView
             style="@style/TextOfSettingsActivityStyle"

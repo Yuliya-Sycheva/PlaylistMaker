@@ -42,7 +42,7 @@
             android:maxLines="1"
             android:paddingVertical="@dimen/icon_padding_8dp"
             android:paddingLeft="14dp"
-            android:textColor="@color/YP_Text_Gray"
+            android:textColor="@color/black"
             android:textColorHint="?attr/colorPrimaryVariant"
             android:textFontWeight="400"
             android:textSize="@dimen/text_size_16sp" />
@@ -54,7 +54,7 @@
         android:layout_gravity="end|center_vertical"
         android:layout_marginRight="16dp"
         android:src="@drawable/clear"
-        android:visibility="visible"
+        android:visibility="gone"
         app:tint="?attr/colorPrimaryVariant"
         android:paddingVertical="@dimen/icon_padding_12dp"
         android:paddingHorizontal="14dp"

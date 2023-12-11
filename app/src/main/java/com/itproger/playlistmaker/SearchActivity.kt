@@ -21,7 +21,6 @@ class SearchActivity : AppCompatActivity() {
         imageBack.setOnClickListener {
             finish()
         }
-        val frameLayout = findViewById<FrameLayout>(R.id.container)
         val inputEditText = findViewById<EditText>(R.id.inputEditText)
         val clearButton = findViewById<ImageView>(R.id.clearIcon)
 
@@ -45,23 +44,18 @@ class SearchActivity : AppCompatActivity() {
             }
         }
         inputEditText.addTextChangedListener(simpleTextWatcher)
-        if (savedInstanceState !=null) {
-            searchValue = savedInstanceState.getString(SEARCH_TEXT, STRING_DEF)
-            inputEditText.setText(searchValue)
+        savedInstanceState?.getString(SEARCH_TEXT)?.let {
+            inputEditText.setText(it)
         }
     }
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putString(SEARCH_TEXT, searchValue)
     }
-    companion object {
-        const val SEARCH_TEXT = "SEARCH_TEXT"
-        const val STRING_DEF = ""
-    }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
-        searchValue = savedInstanceState.getString(SEARCH_TEXT, STRING_DEF)
+        searchValue = savedInstanceState.getString(SEARCH_TEXT)
     }
 
     private fun clearButtonVisibility(s: CharSequence?): Int {
@@ -70,5 +64,8 @@ class SearchActivity : AppCompatActivity() {
         } else {
             View.VISIBLE
         }
+    }
+    private companion object {
+       const val SEARCH_TEXT = "SEARCH_TEXT"
     }
 }
