@@ -7,8 +7,7 @@
     android:orientation="vertical"
     android:theme="@style/Theme.PlaylistMaker">
 
-    <LinearLayout
-        style="@style/LayoutOfPanelHeader">
+    <LinearLayout style="@style/LayoutOfPanelHeader">
 
         <ImageView
             android:id="@+id/back"
@@ -22,9 +21,10 @@
     </LinearLayout>
 
     <FrameLayout
+        android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/container">
+        android:layout_marginBottom="@dimen/around_button_16dp">
 
         <EditText
             android:id="@+id/inputEditText"
@@ -47,18 +47,27 @@
             android:textFontWeight="400"
             android:textSize="@dimen/text_size_16sp" />
 
-    <ImageView
-        android:id="@+id/clearIcon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end|center_vertical"
-        android:layout_marginRight="16dp"
-        android:src="@drawable/clear"
-        android:visibility="gone"
-        app:tint="?attr/colorPrimaryVariant"
-        android:paddingVertical="@dimen/icon_padding_12dp"
-        android:paddingHorizontal="14dp"
-        />
+        <ImageView
+            android:id="@+id/clearIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|center_vertical"
+            android:layout_marginRight="16dp"
+            android:paddingHorizontal="14dp"
+            android:paddingVertical="@dimen/icon_padding_12dp"
+            android:src="@drawable/clear"
+            android:visibility="visible"
+            app:tint="?attr/colorPrimaryVariant" />
 
-</FrameLayout>
+    </FrameLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/trackList"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager">
+
+    </androidx.recyclerview.widget.RecyclerView>
+
 </LinearLayout>

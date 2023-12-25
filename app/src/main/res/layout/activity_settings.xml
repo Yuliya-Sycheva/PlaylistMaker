@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:theme="@style/Theme.PlaylistMaker"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?attr/colorPrimary"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:theme="@style/Theme.PlaylistMaker">
 
-    <LinearLayout
-        style="@style/LayoutOfPanelHeader">
+    <LinearLayout style="@style/LayoutOfPanelHeader">
 
         <ImageView
             android:id="@+id/back"
@@ -32,13 +31,12 @@
         <androidx.appcompat.widget.SwitchCompat
             android:id="@+id/switch_compat"
             style="@style/IconsOfSettingsActivityStyle"
-            app:thumbTint="?attr/colorSwitchThumbNormal"
-            app:trackTint="?attr/colorSecondaryVariant"
-            android:layout_width="61dp"
             android:checked="false"
             android:paddingHorizontal="@dimen/icon_padding_16dp"
             android:paddingVertical="@dimen/icon_padding_top_22dp"
-            app:showText="false" />
+            app:showText="false"
+            app:thumbTint="?attr/colorSwitchThumbNormal"
+            app:trackTint="?attr/colorSecondaryVariant" />
 
     </FrameLayout>
 
@@ -88,11 +86,6 @@
 
         <ImageView
             android:id="@+id/termsOfViews"
-            style="@style/IconsOfSettingsActivityStyle"
-            android:paddingLeft="@dimen/icon_padding_16dp"
-            android:paddingTop="24dp"
-            android:paddingRight="20dp"
-            android:paddingBottom="23dp"
-            android:src="@drawable/arrow" />
+            style="@style/IconArrowStyle" />
     </FrameLayout>
 </LinearLayout>

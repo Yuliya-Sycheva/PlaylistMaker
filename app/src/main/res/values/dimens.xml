@@ -4,6 +4,9 @@
     <dimen name="around_button_16dp">16dp</dimen>
     <dimen name="icon_padding_8dp">8dp</dimen>
     <dimen name="icon_padding_16dp">16dp</dimen>
+    <dimen name="icon_padding_20dp">20dp</dimen>
+    <dimen name="icon_padding_23dp">23dp</dimen>
+    <dimen name="icon_padding_24dp">24dp</dimen>
     <dimen name="icon_padding_12dp">12dp</dimen>
     <dimen name="icon_padding_top_22dp">22dp</dimen>
     <dimen name="icon_padding_bottom_21dp">21dp</dimen>
@@ -12,5 +15,9 @@
     <dimen name="text_left_16dp">16dp</dimen>
     <dimen name="text_size_16sp">16sp</dimen>
     <dimen name="text_top_21sp">21sp</dimen>
+    <dimen name="margin_text_14dp">14dp</dimen>
+    <dimen name="margin_8dp">8dp</dimen>
+    <dimen name="size_0dp">0dp</dimen>
+    <dimen name="image_size_45dp">45dp</dimen>
 
 </resources>

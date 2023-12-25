@@ -10,9 +10,12 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.FrameLayout
 import android.widget.ImageView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 
 class SearchActivity : AppCompatActivity() {
     private var searchValue: String? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
@@ -36,7 +39,7 @@ class SearchActivity : AppCompatActivity() {
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                searchValue=s.toString()
+                searchValue = s.toString()
                 clearButton.visibility = clearButtonVisibility(s)
             }
 
@@ -47,7 +50,44 @@ class SearchActivity : AppCompatActivity() {
         savedInstanceState?.getString(SEARCH_TEXT)?.let {
             inputEditText.setText(it)
         }
+
+        val recycler = findViewById<RecyclerView>(R.id.trackList)
+        recycler.layoutManager = LinearLayoutManager(this)
+        val trackList = listOf(
+            Track(
+                getString(R.string.track_Smells_Like_Teen_Spirit),
+                getString(R.string.artist_Nirvana),
+                "5:01",
+                getString(R.string.image_nirvana_url)
+            ),
+            Track(
+                getString(R.string.track_Billie_Jean),
+                getString(R.string.artist_Michael_Jackson),
+                "4:35",
+                getString(R.string.image_jackson_url)
+            ),
+            Track(
+                getString(R.string.track_Stayin_Alive),
+                getString(R.string.artist_Bee_Gees),
+                "4:10",
+                getString(R.string.image_bee_gees_url)
+            ),
+            Track(
+                getString(R.string.track_Whole_Lotta_Love),
+                getString(R.string.artist_Led_Zeppelin),
+                "5:33",
+                getString(R.string.image_led_zeppelin_url)
+            ),
+            Track(
+                getString(R.string.track_Sweet_Child_O_Mine),
+                getString(R.string.artist_Guns_N_Roses),
+                "5:03",
+                getString(R.string.image_guns_n_roses_url)
+            )
+        )
+        recycler.adapter = TrackAdapter(trackList)
     }
+
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putString(SEARCH_TEXT, searchValue)
@@ -65,7 +105,8 @@ class SearchActivity : AppCompatActivity() {
             View.VISIBLE
         }
     }
+
     private companion object {
-       const val SEARCH_TEXT = "SEARCH_TEXT"
+        const val SEARCH_TEXT = "SEARCH_TEXT"
     }
 }
