@@ -16,7 +16,6 @@
         <TextView
             android:id="@+id/message"
             style="@style/TextOfPanelHeaderStyle"
-            android:paddingRight="134sp"
             android:text="@string/search" />
     </LinearLayout>
 
@@ -56,7 +55,7 @@
             android:paddingHorizontal="14dp"
             android:paddingVertical="@dimen/icon_padding_12dp"
             android:src="@drawable/clear"
-            android:visibility="visible"
+            android:visibility="gone"
             app:tint="?attr/colorPrimaryVariant" />
 
     </FrameLayout>

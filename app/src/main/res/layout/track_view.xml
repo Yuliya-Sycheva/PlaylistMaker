@@ -40,7 +40,7 @@
                 android:textColor="?attr/colorOnPrimary"
                 android:textFontWeight="400"
                 android:textSize="@dimen/text_size_16sp"
-                tools:text="@string/track_Smells_Like_Teen_Spirit" />
+                tools:text="Track Name" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -57,7 +57,7 @@
                     android:layout_weight="1"
                     android:ellipsize="end"
                     android:maxLines="1"
-                    tools:text="@string/artist_Nirvana" />
+                    tools:text="Artist Name" />
 
                 <ImageView
                     android:layout_width="wrap_content"
@@ -73,7 +73,7 @@
                     android:layout_height="match_parent"
                     android:ellipsize="end"
                     android:maxLines="1"
-                    tools:text="2:55" />
+                    tools:text="Time" />
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
