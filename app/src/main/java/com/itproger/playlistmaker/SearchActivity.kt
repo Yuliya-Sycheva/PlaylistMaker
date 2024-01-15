@@ -8,6 +8,7 @@ import android.text.TextWatcher
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
@@ -32,11 +33,11 @@ class SearchActivity : AppCompatActivity() {
 
     private val tracks = ArrayList<Track>()
 
-    private val adapter = TrackAdapter(tracks)
-
     private lateinit var queryInput: EditText
     private lateinit var tracksList: RecyclerView
-    private lateinit var placeholder: TextView
+    private lateinit var placeholderMessage: TextView
+    private lateinit var placeholderImage: ImageView
+    private lateinit var updateButton: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,21 +47,28 @@ class SearchActivity : AppCompatActivity() {
         imageBack.setOnClickListener {
             finish()
         }
-        placeholder = findViewById<TextView>(R.id.placeholder)
-        queryInput = findViewById<EditText>(R.id.query)
+        placeholderMessage = findViewById(R.id.placeholderMessage)
+        queryInput = findViewById(R.id.query)
+        placeholderImage = findViewById(R.id.placeholderImage)
+        updateButton = findViewById(R.id.updateButton)
 
         queryInput.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 searchTrack()
-                true
             }
             false
         }
+
         val clearButton = findViewById<ImageView>(R.id.clearIcon)
 
         clearButton.setOnClickListener {
             queryInput.setText("")
             queryInput.clearFocus()
+            tracks.clear()
+            tracksList.adapter?.notifyDataSetChanged()
+            placeholderMessage.visibility = View.GONE
+            placeholderImage.visibility = View.GONE
+            updateButton.visibility = View.GONE
             val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             imm.hideSoftInputFromWindow(queryInput.windowToken, 0)
         }
@@ -82,8 +90,10 @@ class SearchActivity : AppCompatActivity() {
             queryInput.setText(it)
         }
 
-
-        tracksList = findViewById<RecyclerView>(R.id.trackList)
+        updateButton.setOnClickListener {
+            searchTrack()
+        }
+        tracksList = findViewById(R.id.trackList)
         tracksList.layoutManager = LinearLayoutManager(this)
 
         tracksList.adapter = TrackAdapter(tracks)
@@ -107,14 +117,15 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
+
     private fun showMessage(text: String) {
         if (text.isNotEmpty()) {
-            placeholder.visibility = View.VISIBLE
+            placeholderMessage.visibility = View.VISIBLE
             tracks.clear()
-            adapter.notifyDataSetChanged()
-            placeholder.text = text
+            tracksList.adapter?.notifyDataSetChanged()
+            placeholderMessage.text = text
         } else {
-            placeholder.visibility = View.GONE
+            placeholderMessage.visibility = View.GONE
         }
     }
 
@@ -129,18 +140,26 @@ class SearchActivity : AppCompatActivity() {
                         if (response.body()?.results?.isNotEmpty() == true) {
                             tracks.clear()
                             tracks.addAll(response.body()?.results!!)
-                            adapter.notifyDataSetChanged()
+                            tracksList.adapter?.notifyDataSetChanged()
                             showMessage("")
                         } else {
                             showMessage(getString(R.string.nothing_found))
+                            placeholderImage.visibility = View.VISIBLE
+                            placeholderImage.setImageResource(R.drawable.nothing_found)
                         }
                     } else {
                         showMessage(getString(R.string.something_went_wrong))
+                        placeholderImage.visibility = View.VISIBLE
+                        updateButton.visibility = View.VISIBLE
+                        placeholderImage.setImageResource(R.drawable.something_went_wrong)
                     }
                 }
 
                 override fun onFailure(call: Call<TrackResponse>, t: Throwable) {
                     showMessage(getString(R.string.something_went_wrong))
+                    placeholderImage.visibility = View.VISIBLE
+                    updateButton.visibility = View.VISIBLE
+                    placeholderImage.setImageResource(R.drawable.something_went_wrong)
                 }
             })
     }
