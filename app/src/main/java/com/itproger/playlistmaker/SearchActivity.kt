@@ -31,7 +31,7 @@ class SearchActivity : AppCompatActivity() {
 
     private val iTunesService = retrofit.create(ITunesApi::class.java)
 
-    private val tracks = ArrayList<Track>()
+    private val tracks = mutableListOf<Track>()
 
     private lateinit var queryInput: EditText
     private lateinit var tracksList: RecyclerView
@@ -54,7 +54,7 @@ class SearchActivity : AppCompatActivity() {
 
         queryInput.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
-                searchTrack()
+                searchTrack(queryInput.text.toString())
             }
             false
         }
@@ -91,7 +91,7 @@ class SearchActivity : AppCompatActivity() {
         }
 
         updateButton.setOnClickListener {
-            searchTrack()
+            searchTrack(queryInput.text.toString())
         }
         tracksList = findViewById(R.id.trackList)
         tracksList.layoutManager = LinearLayoutManager(this)
@@ -129,23 +129,26 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
-    private fun searchTrack() {
-        iTunesService.search(queryInput.text.toString())
+    private fun searchTrack(searchText : String) {
+        iTunesService.search(searchText)
             .enqueue(object : Callback<TrackResponse> {
                 override fun onResponse(
                     call: Call<TrackResponse>,
-                    response: Response<TrackResponse>
+                    response: Response<TrackResponse>,
+
                 ) {
-                    if (response.code() == 200) {
-                        if (response.body()?.results?.isNotEmpty() == true) {
+                    if (response.isSuccessful) {
+                        val trackResponse = response.body()
+                        if (trackResponse!=null && trackResponse.results.isNotEmpty()) {
                             tracks.clear()
-                            tracks.addAll(response.body()?.results!!)
+                            tracks.addAll(trackResponse.results)
                             tracksList.adapter?.notifyDataSetChanged()
                             showMessage("")
                         } else {
                             showMessage(getString(R.string.nothing_found))
                             placeholderImage.visibility = View.VISIBLE
                             placeholderImage.setImageResource(R.drawable.nothing_found)
+                            updateButton.visibility = View.GONE
                         }
                     } else {
                         showMessage(getString(R.string.something_went_wrong))
@@ -157,6 +160,8 @@ class SearchActivity : AppCompatActivity() {
 
                 override fun onFailure(call: Call<TrackResponse>, t: Throwable) {
                     showMessage(getString(R.string.something_went_wrong))
+                    tracks.clear()
+                    tracksList.adapter?.notifyDataSetChanged()
                     placeholderImage.visibility = View.VISIBLE
                     updateButton.visibility = View.VISIBLE
                     placeholderImage.setImageResource(R.drawable.something_went_wrong)

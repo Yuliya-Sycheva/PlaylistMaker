@@ -1,22 +1,22 @@
 <resources>
-    <string name="playlist_maker" translatable="false">Playlist maker</string>
-    <string name="search" translatable="false">Поиск</string>
-    <string name="media_library" translatable="false">Медиатека</string>
-    <string name="settings" translatable="false">Настройки</string>
-    <string name="dark_theme" translatable="false">Темная тема</string>
-    <string name="share_app" translatable="false">Поделиться приложением</string>
-    <string name="write_to_support" translatable="false">Написать в поддержку</string>
-    <string name="terms_of_use" translatable="false">Пользовательское соглашение</string>
+    <string name="playlist_maker">Playlist maker</string>
+    <string name="search">Поиск</string>
+    <string name="media_library">Медиатека</string>
+    <string name="settings">Настройки</string>
+    <string name="dark_theme">Темная тема</string>
+    <string name="share_app">Поделиться приложением</string>
+    <string name="write_to_support">Написать в поддержку</string>
+    <string name="terms_of_use">Пользовательское соглашение</string>
 
-    <string name="terms_of_use_url" translatable="false">https://yandex.ru/legal/practicum_offer/</string>
-    <string name="support_email" translatable="false">yuliya-sycheva19@yandex.ru</string>
-    <string name="support_text" translatable="false">Спасибо разработчикам и разработчицам за крутое приложение!</string>
-    <string name="support_subject" translatable="false">Сообщение разработчикам и разработчицам приложения Playlist Maker</string>
-    <string name="share_email" translatable="false">https://practicum.yandex.ru/android-developer/?from=catalog</string>
+    <string name="terms_of_use_url">https://yandex.ru/legal/practicum_offer/</string>
+    <string name="support_email">yuliya-sycheva19@yandex.ru</string>
+    <string name="support_text">Спасибо разработчикам и разработчицам за крутое приложение!</string>
+    <string name="support_subject">Сообщение разработчикам и разработчицам приложения Playlist Maker</string>
+    <string name="share_email">https://practicum.yandex.ru/android-developer/?from=catalog</string>
 
-    <string name="nothing_found" translatable="false">Ничего не нашлось</string>
-    <string name="something_went_wrong" translatable="false">Проблемы со связью \n\nЗагрузка не удалась. Проверьте подключение к интернету</string>
+    <string name="nothing_found">Ничего не нашлось</string>
+    <string name="something_went_wrong">Проблемы со связью \n\nЗагрузка не удалась. Проверьте подключение к интернету</string>
 
-    <string name="update" translatable="false">Обновить</string>
+    <string name="update">Обновить</string>
 
 </resources>

@@ -18,11 +18,12 @@ class TrackViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     private val artworkUrlView: ImageView = itemView.findViewById(R.id.trackIcon)
 
     private val cornerRadius = 2f
+    private val dateFormat by lazy{SimpleDateFormat("mm:ss", Locale.getDefault())}
 
     fun bind(model: Track) {
         trackNameView.text = model.trackName
         artistNameView.text = model.artistName
-        trackTimeView.text = SimpleDateFormat("mm:ss", Locale.getDefault()).format(model.trackTimeMillis)
+        trackTimeView.text = dateFormat.format(model.trackTimeMillis)
         Glide.with(itemView).load(model.artworkUrl100).centerCrop()
             .transform(RoundedCorners(dpToPx(cornerRadius, itemView.context)))
             .placeholder(R.drawable.placeholder).into(artworkUrlView)
