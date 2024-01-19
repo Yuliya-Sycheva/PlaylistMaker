@@ -20,7 +20,7 @@
             android:layout_gravity="center_vertical"
             android:layout_marginVertical="@dimen/margin_8dp"
             android:layout_marginStart="13dp"
-            tools:src="@drawable/light_mode" />
+            tools:src="@drawable/placeholder" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -52,7 +52,7 @@
                 <TextView
                     android:id="@+id/artistName"
                     style="@style/TextOfArtistAndTime"
-                    android:layout_width="@dimen/size_0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:ellipsize="end"

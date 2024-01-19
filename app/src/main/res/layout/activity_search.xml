@@ -26,7 +26,7 @@
         android:layout_marginBottom="@dimen/around_button_16dp">
 
         <EditText
-            android:id="@+id/inputEditText"
+            android:id="@+id/query"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="16dp"
@@ -44,7 +44,9 @@
             android:textColor="@color/black"
             android:textColorHint="?attr/colorPrimaryVariant"
             android:textFontWeight="400"
-            android:textSize="@dimen/text_size_16sp" />
+            android:textSize="@dimen/text_size_16sp"
+            android:imeOptions="actionDone"
+            android:singleLine="true"/>
 
         <ImageView
             android:id="@+id/clearIcon"
@@ -66,7 +68,41 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager">
-
     </androidx.recyclerview.widget.RecyclerView>
+
+    <ImageView
+        android:id="@+id/placeholderImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="102dp" />
+
+    <TextView
+        android:id="@+id/placeholderMessage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="24dp"
+        android:layout_marginTop="16dp"
+        android:textColor="?attr/colorOnPrimary"
+        android:gravity="center"
+        android:textSize="19sp"
+        android:textFontWeight="400"
+        android:fontFamily="@font/ys_display_medium" />
+
+    <Button
+        android:id="@+id/updateButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:layout_gravity="center"
+        android:text="@string/update"
+        android:backgroundTint = "?attr/colorOnPrimary"
+        app:cornerRadius ="54dp"
+        android:textColor="?attr/colorPrimary"
+        android:textSize="14sp"
+        android:textFontWeight="500"
+        android:fontFamily = "@font/ys_display_medium"
+        android:textAllCaps = "false"
+        android:visibility="gone"/>
 
 </LinearLayout>
