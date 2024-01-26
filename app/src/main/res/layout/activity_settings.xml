@@ -18,7 +18,7 @@
             android:paddingRight="86sp"
             android:text="@string/settings" />
     </LinearLayout>
-
+<!--
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -39,6 +39,18 @@
             app:trackTint="?attr/colorSecondaryVariant" />
 
     </FrameLayout>
+-->
+    <com.google.android.material.switchmaterial.SwitchMaterial
+        android:id="@+id/themeSwitcher"
+        style="@style/TextOfSettingsActivityStyle"
+        android:text="@string/dark_theme"
+        android:layout_marginTop="24dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingRight="15dp"
+        app:thumbTint="?attr/colorSwitchThumbNormal"
+        app:trackTint="?attr/colorSecondaryVariant"
+        />
 
     <FrameLayout
         android:layout_width="match_parent"
