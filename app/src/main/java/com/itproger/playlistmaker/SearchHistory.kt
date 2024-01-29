@@ -26,8 +26,6 @@ class SearchHistory(private val sharedPreferences: SharedPreferences) {
         sharedPreferences.edit()
             .putString(HISTORY_TRACKS_LIST_KEY, json)
             .apply()
-            // historyAdapter.setData(historyTracks) /////////////////////////////
-        Log.d("Test", "Сохраняю трек");
     }
 
     fun readTracks(): Array<Track> {

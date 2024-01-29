@@ -1,6 +1,4 @@
 package com.itproger.playlistmaker
-
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Toast
@@ -21,13 +19,12 @@ class TrackAdapter(
         val currentTrack = trackList[position]
         holder.bind(currentTrack)
         holder.itemView.setOnClickListener{
-            Toast.makeText(holder.itemView.context, "Нажали на трек!", Toast.LENGTH_SHORT).show()
+           // Toast.makeText(holder.itemView.context, "Нажали на трек!", Toast.LENGTH_SHORT).show()
             searchHistory.saveTrack(mutableListOf(currentTrack))
-            Log.d("Test", "Адаптер")
 
         }
     }
-    fun setData(newTracks: List<Track>) { ///////////////////////////
+    fun setData(newTracks: MutableList<Track>) {
         trackList.clear()
         trackList.addAll(newTracks)
         notifyDataSetChanged()
