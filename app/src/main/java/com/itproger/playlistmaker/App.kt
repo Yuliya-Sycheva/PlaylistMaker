@@ -4,7 +4,7 @@ import android.app.Application
 import androidx.appcompat.app.AppCompatDelegate
 
 const val THEME_PREFERENCES = "playlist_maker_theme_preferences"
-var NIGHT_THEME_KEY = "night_theme"
+const val NIGHT_THEME_KEY = "night_theme"
 
 class App : Application() {
 

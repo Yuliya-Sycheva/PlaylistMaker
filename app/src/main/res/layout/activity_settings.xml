@@ -18,28 +18,7 @@
             android:paddingRight="86sp"
             android:text="@string/settings" />
     </LinearLayout>
-<!--
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp">
 
-        <TextView
-            style="@style/TextOfSettingsActivityStyle"
-            android:text="@string/dark_theme" />
-
-        <androidx.appcompat.widget.SwitchCompat
-            android:id="@+id/switch_compat"
-            style="@style/IconsOfSettingsActivityStyle"
-            android:checked="false"
-            android:paddingHorizontal="@dimen/icon_padding_16dp"
-            android:paddingVertical="@dimen/icon_padding_top_22dp"
-            app:showText="false"
-            app:thumbTint="?attr/colorSwitchThumbNormal"
-            app:trackTint="?attr/colorSecondaryVariant" />
-
-    </FrameLayout>
--->
     <com.google.android.material.switchmaterial.SwitchMaterial
         android:id="@+id/themeSwitcher"
         style="@style/TextOfSettingsActivityStyle"
@@ -63,9 +42,9 @@
         <ImageView
             android:id="@+id/share"
             style="@style/IconsOfSettingsActivityStyle"
-            android:paddingLeft="@dimen/icon_padding_12dp"
+            android:paddingLeft="@dimen/padding_12dp"
             android:paddingTop="@dimen/icon_padding_top_22dp"
-            android:paddingRight="@dimen/icon_padding_16dp"
+            android:paddingRight="@dimen/padding_16dp"
             android:paddingBottom="@dimen/icon_padding_bottom_21dp"
             android:src="@drawable/share" />
     </FrameLayout>

@@ -37,16 +37,16 @@
             android:drawableTint="?attr/colorPrimaryVariant"
             android:fontFamily="@font/ys_display_regular"
             android:hint="@string/search"
+            android:imeOptions="actionDone"
             android:inputType="text"
             android:maxLines="1"
-            android:paddingVertical="@dimen/icon_padding_8dp"
+            android:paddingVertical="@dimen/padding_8dp"
             android:paddingLeft="14dp"
+            android:singleLine="true"
             android:textColor="@color/black"
             android:textColorHint="?attr/colorPrimaryVariant"
             android:textFontWeight="400"
-            android:textSize="@dimen/text_size_16sp"
-            android:imeOptions="actionDone"
-            android:singleLine="true"/>
+            android:textSize="@dimen/text_size_16sp" />
 
         <ImageView
             android:id="@+id/clearIcon"
@@ -55,7 +55,7 @@
             android:layout_gravity="end|center_vertical"
             android:layout_marginRight="16dp"
             android:paddingHorizontal="14dp"
-            android:paddingVertical="@dimen/icon_padding_12dp"
+            android:paddingVertical="@dimen/padding_12dp"
             android:src="@drawable/clear"
             android:visibility="gone"
             app:tint="?attr/colorPrimaryVariant" />
@@ -75,7 +75,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="102dp" />
+        android:layout_marginTop="102dp"
+        android:visibility="gone"/>
 
     <TextView
         android:id="@+id/placeholderMessage"
@@ -83,26 +84,68 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="24dp"
         android:layout_marginTop="16dp"
-        android:textColor="?attr/colorOnPrimary"
+        android:fontFamily="@font/ys_display_medium"
         android:gravity="center"
-        android:textSize="19sp"
+        android:textColor="?attr/colorOnPrimary"
         android:textFontWeight="400"
-        android:fontFamily="@font/ys_display_medium" />
+        android:textSize="19sp"
+        android:visibility="gone"/>
 
     <Button
         android:id="@+id/updateButton"
+        style="@style/ButtonsOfSearchActivityStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
         android:layout_gravity="center"
+        android:layout_marginTop="@dimen/margin_24dp"
         android:text="@string/update"
-        android:backgroundTint = "?attr/colorOnPrimary"
-        app:cornerRadius ="54dp"
-        android:textColor="?attr/colorPrimary"
-        android:textSize="14sp"
-        android:textFontWeight="500"
-        android:fontFamily = "@font/ys_display_medium"
-        android:textAllCaps = "false"
         android:visibility="gone"/>
 
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
+
+    <LinearLayout
+        android:id="@+id/historyLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="@dimen/margin_24dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_8dp"
+            android:paddingTop="18dp"
+            android:paddingBottom="@dimen/padding_12dp"
+            android:paddingHorizontal="@dimen/padding_16dp"
+            android:gravity="center"
+            android:text="@string/your_search_results"
+            android:fontFamily="@font/ys_display_medium"
+            android:textAllCaps="false"
+            android:textColor="?attr/colorOnPrimary"
+            android:textFontWeight="500"
+            android:textSize="19sp" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/tracksHistoryList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager">
+        </androidx.recyclerview.widget.RecyclerView>
+
+        <Button
+            android:id="@+id/cleanHistory"
+            style="@style/ButtonsOfSearchActivityStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/margin_24dp"
+            android:text="@string/clean_history" />
+
+    </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
 </LinearLayout>
