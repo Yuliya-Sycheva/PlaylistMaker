@@ -24,9 +24,8 @@ class TrackAdapter(
 
         }
     }
-    fun setData(newTracks: MutableList<Track>) {
+    fun setData(newTracks: List<Track>) {
         trackList.clear()
         trackList.addAll(newTracks)
-        notifyDataSetChanged()
     }
 }

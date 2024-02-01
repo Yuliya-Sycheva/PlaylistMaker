@@ -22,8 +22,6 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class SearchActivity : AppCompatActivity() {
 
-    private val searchHistoryPreferences = "playlist_maker_search_history_preferences"
-
     private var searchValue: String? = null
 
     private val iTunesBaseUrl = "https://itunes.apple.com"
@@ -123,7 +121,7 @@ class SearchActivity : AppCompatActivity() {
         tracksList = findViewById(R.id.trackList)
         tracksList.layoutManager = LinearLayoutManager(this)
 
-        val sharedPreferences = getSharedPreferences(searchHistoryPreferences, MODE_PRIVATE)
+        val sharedPreferences = getSharedPreferences(Companion.SEARCH_HISTORY_PREFERENCES, MODE_PRIVATE)
         searchHistory = SearchHistory(sharedPreferences)
 
         tracksList.adapter = TrackAdapter(tracks, searchHistory)
@@ -140,7 +138,7 @@ class SearchActivity : AppCompatActivity() {
         cleanHistoryButton = findViewById(R.id.cleanHistory)
         cleanHistoryButton.setOnClickListener {
             historyTracks.clear()
-            sharedPreferences.edit().remove(HISTORY_TRACKS_LIST_KEY).apply()
+            searchHistory.clearTracks()
             searchHistory.saveTrack(historyTracks)
             historyLayout.visibility = View.GONE
             historyAdapter.notifyDataSetChanged()
@@ -223,5 +221,6 @@ class SearchActivity : AppCompatActivity() {
 
     private companion object {
         const val SEARCH_TEXT = "SEARCH_TEXT"
+        const val SEARCH_HISTORY_PREFERENCES = "playlist_maker_search_history_preferences"
     }
 }

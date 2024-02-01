@@ -33,4 +33,10 @@ class SearchHistory(private val sharedPreferences: SharedPreferences) {
         Log.d("Test", "Читаю трек")
         return Gson().fromJson(json, Array<Track>::class.java)
     }
+
+    fun clearTracks() {
+        sharedPreferences.edit()
+            .remove(HISTORY_TRACKS_LIST_KEY)
+            .apply()
+    }
 }

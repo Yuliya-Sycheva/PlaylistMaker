@@ -58,7 +58,6 @@ class SettingsActivity : AppCompatActivity() {
 
         themeSwitcher.setOnCheckedChangeListener { switcher, checked ->
             (applicationContext as App).switchTheme(checked)
-            (applicationContext as App).saveThemeToSharedPreferences()
         }
     }
 }
