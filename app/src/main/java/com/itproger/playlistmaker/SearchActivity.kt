@@ -1,5 +1,4 @@
 package com.itproger.playlistmaker
-
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -11,6 +10,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -21,6 +21,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 class SearchActivity : AppCompatActivity() {
+
     private var searchValue: String? = null
 
     private val iTunesBaseUrl = "https://itunes.apple.com"
@@ -38,6 +39,13 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var placeholderMessage: TextView
     private lateinit var placeholderImage: ImageView
     private lateinit var updateButton: Button
+    private lateinit var tracksHistoryList: RecyclerView
+    private lateinit var cleanHistoryButton: Button
+    private lateinit var historyLayout: LinearLayout
+
+    private lateinit var historyAdapter : TrackAdapter
+    private lateinit var searchHistory: SearchHistory
+    private lateinit var historyTracks: MutableList<Track>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,12 +59,27 @@ class SearchActivity : AppCompatActivity() {
         queryInput = findViewById(R.id.query)
         placeholderImage = findViewById(R.id.placeholderImage)
         updateButton = findViewById(R.id.updateButton)
+        historyLayout = findViewById(R.id.historyLayout)
+
+        historyLayout.visibility = View.GONE
+
 
         queryInput.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 searchTrack(queryInput.text.toString())
             }
             false
+        }
+
+        queryInput.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus && queryInput.text.isEmpty()) {
+                val historyTracks = searchHistory.readTracks().toMutableList()
+                historyAdapter.setData(historyTracks)
+                historyAdapter.notifyDataSetChanged()
+                historyLayout.visibility = if (historyTracks.isNotEmpty()) View.VISIBLE else View.GONE
+            } else {
+                historyLayout.visibility = View.GONE
+            }
         }
 
         val clearButton = findViewById<ImageView>(R.id.clearIcon)
@@ -80,6 +103,8 @@ class SearchActivity : AppCompatActivity() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 searchValue = s.toString()
                 clearButton.visibility = clearButtonVisibility(s)
+                historyLayout.visibility =
+                    if (queryInput.hasFocus() && s?.isEmpty() == true ) View.VISIBLE else View.GONE
             }
 
             override fun afterTextChanged(s: Editable?) {
@@ -96,7 +121,28 @@ class SearchActivity : AppCompatActivity() {
         tracksList = findViewById(R.id.trackList)
         tracksList.layoutManager = LinearLayoutManager(this)
 
-        tracksList.adapter = TrackAdapter(tracks)
+        val sharedPreferences = getSharedPreferences(Companion.SEARCH_HISTORY_PREFERENCES, MODE_PRIVATE)
+        searchHistory = SearchHistory(sharedPreferences)
+
+        tracksList.adapter = TrackAdapter(tracks, searchHistory)
+
+        tracksHistoryList = findViewById(R.id.tracksHistoryList)
+        tracksHistoryList.layoutManager = LinearLayoutManager(this)
+
+        historyTracks = searchHistory.readTracks().toMutableList()
+
+         historyAdapter = TrackAdapter(historyTracks, searchHistory)
+        tracksHistoryList.adapter = historyAdapter
+
+
+        cleanHistoryButton = findViewById(R.id.cleanHistory)
+        cleanHistoryButton.setOnClickListener {
+            historyTracks.clear()
+            searchHistory.clearTracks()
+            searchHistory.saveTrack(historyTracks)
+            historyLayout.visibility = View.GONE
+            historyAdapter.notifyDataSetChanged()
+        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -121,6 +167,7 @@ class SearchActivity : AppCompatActivity() {
     private fun showMessage(text: String) {
         if (text.isNotEmpty()) {
             placeholderMessage.visibility = View.VISIBLE
+            historyLayout.visibility = View.GONE
             tracks.clear()
             tracksList.adapter?.notifyDataSetChanged()
             placeholderMessage.text = text
@@ -129,29 +176,31 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
-    private fun searchTrack(searchText : String) {
+    private fun searchTrack(searchText: String) {
         iTunesService.search(searchText)
             .enqueue(object : Callback<TrackResponse> {
                 override fun onResponse(
                     call: Call<TrackResponse>,
                     response: Response<TrackResponse>,
 
-                ) {
+                    ) {
                     if (response.isSuccessful) {
                         val trackResponse = response.body()
-                        if (trackResponse!=null && trackResponse.results.isNotEmpty()) {
+                        if (trackResponse != null && trackResponse.results.isNotEmpty()) {
                             tracks.clear()
                             tracks.addAll(trackResponse.results)
                             tracksList.adapter?.notifyDataSetChanged()
                             showMessage("")
                         } else {
                             showMessage(getString(R.string.nothing_found))
+                            historyLayout.visibility = View.GONE
                             placeholderImage.visibility = View.VISIBLE
                             placeholderImage.setImageResource(R.drawable.nothing_found)
                             updateButton.visibility = View.GONE
                         }
                     } else {
                         showMessage(getString(R.string.something_went_wrong))
+                        historyLayout.visibility = View.GONE
                         placeholderImage.visibility = View.VISIBLE
                         updateButton.visibility = View.VISIBLE
                         placeholderImage.setImageResource(R.drawable.something_went_wrong)
@@ -164,6 +213,7 @@ class SearchActivity : AppCompatActivity() {
                     tracksList.adapter?.notifyDataSetChanged()
                     placeholderImage.visibility = View.VISIBLE
                     updateButton.visibility = View.VISIBLE
+                    historyLayout.visibility = View.GONE
                     placeholderImage.setImageResource(R.drawable.something_went_wrong)
                 }
             })
@@ -171,5 +221,6 @@ class SearchActivity : AppCompatActivity() {
 
     private companion object {
         const val SEARCH_TEXT = "SEARCH_TEXT"
+        const val SEARCH_HISTORY_PREFERENCES = "playlist_maker_search_history_preferences"
     }
 }
