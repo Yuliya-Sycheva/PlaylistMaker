@@ -1,9 +1,11 @@
 package com.itproger.playlistmaker
 import android.content.Context
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
@@ -14,6 +16,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.gson.Gson
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -46,6 +49,19 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var historyAdapter : TrackAdapter
     private lateinit var searchHistory: SearchHistory
     private lateinit var historyTracks: MutableList<Track>
+
+    private val historyTrackClickListener: (Track) -> Unit = { clickedTrack ->
+        val playerIntent = Intent(this,PlayerActivity::class.java)
+        playerIntent.putExtra("clicked_track", Gson().toJson(clickedTrack))
+        startActivity(playerIntent)
+    }
+
+    private val currentTrackClickListener: (Track) -> Unit = { clickedTrack ->
+        searchHistory.saveTrack(listOf(clickedTrack))
+        val playerIntent = Intent(this,PlayerActivity::class.java)
+        playerIntent.putExtra("clicked_track", Gson().toJson(clickedTrack))
+        startActivity(playerIntent)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -124,14 +140,14 @@ class SearchActivity : AppCompatActivity() {
         val sharedPreferences = getSharedPreferences(Companion.SEARCH_HISTORY_PREFERENCES, MODE_PRIVATE)
         searchHistory = SearchHistory(sharedPreferences)
 
-        tracksList.adapter = TrackAdapter(tracks, searchHistory)
+        tracksList.adapter = TrackAdapter(tracks, currentTrackClickListener)
 
         tracksHistoryList = findViewById(R.id.tracksHistoryList)
         tracksHistoryList.layoutManager = LinearLayoutManager(this)
 
         historyTracks = searchHistory.readTracks().toMutableList()
 
-         historyAdapter = TrackAdapter(historyTracks, searchHistory)
+         historyAdapter = TrackAdapter(historyTracks, historyTrackClickListener)
         tracksHistoryList.adapter = historyAdapter
 
 
@@ -186,11 +202,19 @@ class SearchActivity : AppCompatActivity() {
                     ) {
                     if (response.isSuccessful) {
                         val trackResponse = response.body()
+                        Log.d("TRANSLATION_LOG", "Status code: ${response.code()}")
                         if (trackResponse != null && trackResponse.results.isNotEmpty()) {
                             tracks.clear()
                             tracks.addAll(trackResponse.results)
                             tracksList.adapter?.notifyDataSetChanged()
                             showMessage("")
+
+                            // Обновление истории поиска
+                            val historyTracks = searchHistory.readTracks().toMutableList()
+                            historyAdapter.setData(historyTracks)
+                            historyAdapter.notifyDataSetChanged()
+                            historyLayout.visibility = if (historyTracks.isNotEmpty()) View.VISIBLE else View.GONE
+
                         } else {
                             showMessage(getString(R.string.nothing_found))
                             historyLayout.visibility = View.GONE
@@ -208,6 +232,7 @@ class SearchActivity : AppCompatActivity() {
                 }
 
                 override fun onFailure(call: Call<TrackResponse>, t: Throwable) {
+                    Log.d("TRANSLATION_LOG", "Бяда")
                     showMessage(getString(R.string.something_went_wrong))
                     tracks.clear()
                     tracksList.adapter?.notifyDataSetChanged()
