@@ -6,26 +6,27 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.ImageView
 import com.google.android.material.switchmaterial.SwitchMaterial
+import com.itproger.playlistmaker.databinding.ActivityMainBinding
+import com.itproger.playlistmaker.databinding.ActivitySettingsBinding
 
 class SettingsActivity : AppCompatActivity() {
+    private lateinit var binding: ActivitySettingsBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_settings)
+        binding = ActivitySettingsBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        val imageBack = findViewById<ImageView>(R.id.back)
-        imageBack.setOnClickListener {
+        binding.back.setOnClickListener {
             finish()
         }
 
-        val imageTermsOfUse = findViewById<ImageView>(R.id.termsOfViews)
-        imageTermsOfUse.setOnClickListener {
+        binding.termsOfViews.setOnClickListener {
             val browseIntent =
                 Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.terms_of_use_url)))
             startActivity(browseIntent)
         }
 
-        val imageSupport = findViewById<ImageView>(R.id.support)
-        imageSupport.setOnClickListener {
+        binding.support.setOnClickListener {
             Intent(Intent.ACTION_SENDTO).apply {
                 data = Uri.parse("mailto:")
                 putExtra(Intent.EXTRA_TEXT, getString(R.string.support_text))
@@ -38,8 +39,7 @@ class SettingsActivity : AppCompatActivity() {
             }
         }
 
-        val imageShare = findViewById<ImageView>(R.id.share)
-        imageShare.setOnClickListener {
+        binding.share.setOnClickListener {
             val sendIntent: Intent = Intent().apply {
                 action = Intent.ACTION_SEND
                 putExtra(
@@ -52,11 +52,9 @@ class SettingsActivity : AppCompatActivity() {
             startActivity(shareIntent)
         }
 
-        val themeSwitcher = findViewById<SwitchMaterial>(R.id.themeSwitcher)
+        binding.themeSwitcher.isChecked = (applicationContext as App).darkTheme
 
-        themeSwitcher.isChecked = (applicationContext as App).darkTheme
-
-        themeSwitcher.setOnCheckedChangeListener { switcher, checked ->
+        binding.themeSwitcher.setOnCheckedChangeListener { switcher, checked ->
             (applicationContext as App).switchTheme(checked)
         }
     }

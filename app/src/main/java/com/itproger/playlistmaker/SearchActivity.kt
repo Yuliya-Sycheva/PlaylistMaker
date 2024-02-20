@@ -1,4 +1,5 @@
 package com.itproger.playlistmaker
+
 import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -17,6 +18,8 @@ import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
+import com.itproger.playlistmaker.databinding.ActivityLibraryBinding
+import com.itproger.playlistmaker.databinding.ActivitySearchBinding
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -24,6 +27,8 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 class SearchActivity : AppCompatActivity() {
+
+    private lateinit var binding: ActivitySearchBinding
 
     private var searchValue: String? = null
 
@@ -37,79 +42,64 @@ class SearchActivity : AppCompatActivity() {
 
     private val tracks = mutableListOf<Track>()
 
-    private lateinit var queryInput: EditText
-    private lateinit var tracksList: RecyclerView
-    private lateinit var placeholderMessage: TextView
-    private lateinit var placeholderImage: ImageView
-    private lateinit var updateButton: Button
-    private lateinit var tracksHistoryList: RecyclerView
-    private lateinit var cleanHistoryButton: Button
-    private lateinit var historyLayout: LinearLayout
-
-    private lateinit var historyAdapter : TrackAdapter
+    private lateinit var historyAdapter: TrackAdapter
     private lateinit var searchHistory: SearchHistory
     private lateinit var historyTracks: MutableList<Track>
 
     private val historyTrackClickListener: (Track) -> Unit = { clickedTrack ->
-        val playerIntent = Intent(this,PlayerActivity::class.java)
+        val playerIntent = Intent(this, PlayerActivity::class.java)
         playerIntent.putExtra("clicked_track", Gson().toJson(clickedTrack))
         startActivity(playerIntent)
     }
 
     private val currentTrackClickListener: (Track) -> Unit = { clickedTrack ->
         searchHistory.saveTrack(listOf(clickedTrack))
-        val playerIntent = Intent(this,PlayerActivity::class.java)
+        val playerIntent = Intent(this, PlayerActivity::class.java)
         playerIntent.putExtra("clicked_track", Gson().toJson(clickedTrack))
         startActivity(playerIntent)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_search)
+        binding = ActivitySearchBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        val imageBack = findViewById<ImageView>(R.id.back)
-        imageBack.setOnClickListener {
+        binding.back.setOnClickListener {
             finish()
         }
-        placeholderMessage = findViewById(R.id.placeholderMessage)
-        queryInput = findViewById(R.id.query)
-        placeholderImage = findViewById(R.id.placeholderImage)
-        updateButton = findViewById(R.id.updateButton)
-        historyLayout = findViewById(R.id.historyLayout)
 
-        historyLayout.visibility = View.GONE
+        binding.historyLayout.visibility = View.GONE
 
 
-        queryInput.setOnEditorActionListener { _, actionId, _ ->
+        binding.query.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
-                searchTrack(queryInput.text.toString())
+                searchTrack(binding.query.text.toString())
             }
             false
         }
 
-        queryInput.setOnFocusChangeListener { _, hasFocus ->
-            if (hasFocus && queryInput.text.isEmpty()) {
+        binding.query.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus && binding.query.text.isEmpty()) {
                 val historyTracks = searchHistory.readTracks().toMutableList()
                 historyAdapter.setData(historyTracks)
                 historyAdapter.notifyDataSetChanged()
-                historyLayout.visibility = if (historyTracks.isNotEmpty()) View.VISIBLE else View.GONE
+                binding.historyLayout.visibility =
+                    if (historyTracks.isNotEmpty()) View.VISIBLE else View.GONE
             } else {
-                historyLayout.visibility = View.GONE
+                binding.historyLayout.visibility = View.GONE
             }
         }
 
-        val clearButton = findViewById<ImageView>(R.id.clearIcon)
-
-        clearButton.setOnClickListener {
-            queryInput.setText("")
-            queryInput.clearFocus()
+        binding.clearIcon.setOnClickListener {
+            binding.query.setText("")
+            binding.query.clearFocus()
             tracks.clear()
-            tracksList.adapter?.notifyDataSetChanged()
-            placeholderMessage.visibility = View.GONE
-            placeholderImage.visibility = View.GONE
-            updateButton.visibility = View.GONE
+            binding.trackList.adapter?.notifyDataSetChanged()
+            binding.placeholderMessage.visibility = View.GONE
+            binding.placeholderImage.visibility = View.GONE
+            binding.updateButton.visibility = View.GONE
             val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            imm.hideSoftInputFromWindow(queryInput.windowToken, 0)
+            imm.hideSoftInputFromWindow(binding.query.windowToken, 0)
         }
 
         val simpleTextWatcher = object : TextWatcher {
@@ -118,45 +108,43 @@ class SearchActivity : AppCompatActivity() {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 searchValue = s.toString()
-                clearButton.visibility = clearButtonVisibility(s)
-                historyLayout.visibility =
-                    if (queryInput.hasFocus() && s?.isEmpty() == true ) View.VISIBLE else View.GONE
+                binding.clearIcon.visibility = clearButtonVisibility(s)
+                binding.historyLayout.visibility =
+                    if (binding.query.hasFocus() && s?.isEmpty() == true) View.VISIBLE else View.GONE
             }
 
             override fun afterTextChanged(s: Editable?) {
             }
         }
-        queryInput.addTextChangedListener(simpleTextWatcher)
+        binding.query.addTextChangedListener(simpleTextWatcher)
         savedInstanceState?.getString(SEARCH_TEXT)?.let {
-            queryInput.setText(it)
+            binding.query.setText(it)
         }
 
-        updateButton.setOnClickListener {
-            searchTrack(queryInput.text.toString())
+        binding.updateButton.setOnClickListener {
+            searchTrack(binding.query.text.toString())
         }
-        tracksList = findViewById(R.id.trackList)
-        tracksList.layoutManager = LinearLayoutManager(this)
+        binding.trackList.layoutManager = LinearLayoutManager(this)
 
-        val sharedPreferences = getSharedPreferences(Companion.SEARCH_HISTORY_PREFERENCES, MODE_PRIVATE)
+        val sharedPreferences =
+            getSharedPreferences(Companion.SEARCH_HISTORY_PREFERENCES, MODE_PRIVATE)
         searchHistory = SearchHistory(sharedPreferences)
 
-        tracksList.adapter = TrackAdapter(tracks, currentTrackClickListener)
+        binding.trackList.adapter = TrackAdapter(tracks, currentTrackClickListener)
 
-        tracksHistoryList = findViewById(R.id.tracksHistoryList)
-        tracksHistoryList.layoutManager = LinearLayoutManager(this)
+        binding.tracksHistoryList.layoutManager = LinearLayoutManager(this)
 
         historyTracks = searchHistory.readTracks().toMutableList()
 
-         historyAdapter = TrackAdapter(historyTracks, historyTrackClickListener)
-        tracksHistoryList.adapter = historyAdapter
+        historyAdapter = TrackAdapter(historyTracks, historyTrackClickListener)
+        binding.tracksHistoryList.adapter = historyAdapter
 
 
-        cleanHistoryButton = findViewById(R.id.cleanHistory)
-        cleanHistoryButton.setOnClickListener {
+        binding.cleanHistory.setOnClickListener {
             historyTracks.clear()
             searchHistory.clearTracks()
             searchHistory.saveTrack(historyTracks)
-            historyLayout.visibility = View.GONE
+            binding.historyLayout.visibility = View.GONE
             historyAdapter.notifyDataSetChanged()
         }
     }
@@ -182,13 +170,13 @@ class SearchActivity : AppCompatActivity() {
 
     private fun showMessage(text: String) {
         if (text.isNotEmpty()) {
-            placeholderMessage.visibility = View.VISIBLE
-            historyLayout.visibility = View.GONE
+            binding.placeholderMessage.visibility = View.VISIBLE
+            binding.historyLayout.visibility = View.GONE
             tracks.clear()
-            tracksList.adapter?.notifyDataSetChanged()
-            placeholderMessage.text = text
+            binding.trackList.adapter?.notifyDataSetChanged()
+            binding.placeholderMessage.text = text
         } else {
-            placeholderMessage.visibility = View.GONE
+            binding.placeholderMessage.visibility = View.GONE
         }
     }
 
@@ -206,28 +194,29 @@ class SearchActivity : AppCompatActivity() {
                         if (trackResponse != null && trackResponse.results.isNotEmpty()) {
                             tracks.clear()
                             tracks.addAll(trackResponse.results)
-                            tracksList.adapter?.notifyDataSetChanged()
+                            binding.trackList.adapter?.notifyDataSetChanged()
                             showMessage("")
 
                             // Обновление истории поиска
                             val historyTracks = searchHistory.readTracks().toMutableList()
                             historyAdapter.setData(historyTracks)
                             historyAdapter.notifyDataSetChanged()
-                            historyLayout.visibility = if (historyTracks.isNotEmpty()) View.VISIBLE else View.GONE
+                            binding.historyLayout.visibility =
+                                if (historyTracks.isNotEmpty()) View.VISIBLE else View.GONE
 
                         } else {
                             showMessage(getString(R.string.nothing_found))
-                            historyLayout.visibility = View.GONE
-                            placeholderImage.visibility = View.VISIBLE
-                            placeholderImage.setImageResource(R.drawable.nothing_found)
-                            updateButton.visibility = View.GONE
+                            binding.historyLayout.visibility = View.GONE
+                            binding.placeholderImage.visibility = View.VISIBLE
+                            binding.placeholderImage.setImageResource(R.drawable.nothing_found)
+                            binding.updateButton.visibility = View.GONE
                         }
                     } else {
                         showMessage(getString(R.string.something_went_wrong))
-                        historyLayout.visibility = View.GONE
-                        placeholderImage.visibility = View.VISIBLE
-                        updateButton.visibility = View.VISIBLE
-                        placeholderImage.setImageResource(R.drawable.something_went_wrong)
+                        binding.historyLayout.visibility = View.GONE
+                        binding.placeholderImage.visibility = View.VISIBLE
+                        binding.updateButton.visibility = View.VISIBLE
+                        binding.placeholderImage.setImageResource(R.drawable.something_went_wrong)
                     }
                 }
 
@@ -235,11 +224,11 @@ class SearchActivity : AppCompatActivity() {
                     Log.d("TRANSLATION_LOG", "Бяда")
                     showMessage(getString(R.string.something_went_wrong))
                     tracks.clear()
-                    tracksList.adapter?.notifyDataSetChanged()
-                    placeholderImage.visibility = View.VISIBLE
-                    updateButton.visibility = View.VISIBLE
-                    historyLayout.visibility = View.GONE
-                    placeholderImage.setImageResource(R.drawable.something_went_wrong)
+                    binding.trackList.adapter?.notifyDataSetChanged()
+                    binding.placeholderImage.visibility = View.VISIBLE
+                    binding.updateButton.visibility = View.VISIBLE
+                    binding.historyLayout.visibility = View.GONE
+                    binding.placeholderImage.setImageResource(R.drawable.something_went_wrong)
                 }
             })
     }

@@ -74,7 +74,7 @@
         android:layout_marginTop="38dp"
         android:background="@drawable/play"
         app:layout_constraintTop_toBottomOf="@id/artistName"
-        app:layout_constraintBottom_toTopOf="@id/play_time"
+        app:layout_constraintBottom_toTopOf="@id/playTime"
         app:layout_constraintStart_toEndOf="@id/leftBorder"
         app:layout_constraintEnd_toEndOf="@id/rightBorder" />
 
@@ -97,7 +97,7 @@
         app:layout_constraintEnd_toEndOf="@id/rightBorder" />
 
     <TextView
-        android:id="@+id/play_time"
+        android:id="@+id/playTime"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
@@ -121,7 +121,7 @@
         android:layout_marginStart="@dimen/margin_16dp"
         android:text="@string/time"
         android:textColor="@color/YP_Text_Gray"
-        app:layout_constraintTop_toBottomOf="@id/play_time"
+        app:layout_constraintTop_toBottomOf="@id/playTime"
         app:layout_constraintBottom_toTopOf="@id/album"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -179,7 +179,7 @@
         app:layout_constraintStart_toStartOf="parent"/>
 
     <TextView
-        android:id="@+id/track_time"
+        android:id="@+id/trackDuration"
         style="@style/TextRegular13"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -191,7 +191,7 @@
         app:layout_constraintEnd_toEndOf="parent" />
 
     <TextView
-        android:id="@+id/track_album"
+        android:id="@+id/trackAlbum"
         style="@style/TextRegular13"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -207,7 +207,7 @@
         app:layout_constraintEnd_toEndOf="parent" />
 
     <TextView
-        android:id="@+id/track_year"
+        android:id="@+id/releaseDate"
         style="@style/TextRegular13"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -223,7 +223,7 @@
         app:layout_constraintEnd_toEndOf="parent" />
 
     <TextView
-        android:id="@+id/track_genre"
+        android:id="@+id/trackGenre"
         style="@style/TextRegular13"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -239,7 +239,7 @@
         app:layout_constraintEnd_toEndOf="parent" />
 
     <TextView
-        android:id="@+id/track_country"
+        android:id="@+id/trackCountry"
         style="@style/TextRegular13"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -260,6 +260,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="visible"
-        app:constraint_referenced_ids="track_album,album" />
+        app:constraint_referenced_ids="trackAlbum,album" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
