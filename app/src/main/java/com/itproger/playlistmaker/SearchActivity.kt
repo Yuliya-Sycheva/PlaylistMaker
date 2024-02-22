@@ -48,14 +48,14 @@ class SearchActivity : AppCompatActivity() {
 
     private val historyTrackClickListener: (Track) -> Unit = { clickedTrack ->
         val playerIntent = Intent(this, PlayerActivity::class.java)
-        playerIntent.putExtra("clicked_track", Gson().toJson(clickedTrack))
+        playerIntent.putExtra(CLICKED_TRACK, clickedTrack)
         startActivity(playerIntent)
     }
 
     private val currentTrackClickListener: (Track) -> Unit = { clickedTrack ->
         searchHistory.saveTrack(listOf(clickedTrack))
         val playerIntent = Intent(this, PlayerActivity::class.java)
-        playerIntent.putExtra("clicked_track", Gson().toJson(clickedTrack))
+        playerIntent.putExtra(CLICKED_TRACK, clickedTrack)
         startActivity(playerIntent)
     }
 
@@ -236,5 +236,6 @@ class SearchActivity : AppCompatActivity() {
     private companion object {
         const val SEARCH_TEXT = "SEARCH_TEXT"
         const val SEARCH_HISTORY_PREFERENCES = "playlist_maker_search_history_preferences"
+        const val CLICKED_TRACK: String = "clicked_track"
     }
 }

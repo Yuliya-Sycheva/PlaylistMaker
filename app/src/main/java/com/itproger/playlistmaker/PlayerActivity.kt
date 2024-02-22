@@ -1,15 +1,12 @@
 package com.itproger.playlistmaker
 
-import android.content.Context
+import android.os.Build
 import android.os.Bundle
-import android.util.TypedValue
 import android.view.View
 import android.widget.ImageView
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.google.gson.Gson
 import com.itproger.playlistmaker.databinding.ActivityPlayerBinding
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -18,14 +15,27 @@ class PlayerActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityPlayerBinding
 
+    private companion object {
+        const val CLICKED_TRACK: String = "clicked_track"
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityPlayerBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val trackJson = intent.getStringExtra("clicked_track")
-        val track = Gson().fromJson(trackJson, Track::class.java)
+        val track = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            intent.getParcelableExtra(CLICKED_TRACK, Track::class.java)
+        } else {
+            intent.getParcelableExtra(CLICKED_TRACK)
+        }
 
+        if (track != null) {
+            setTrackData(track)
+        }
+    }
+
+    private fun setTrackData(track: Track) {
         val cornerRadius = 8f
         val dateFormat by lazy { SimpleDateFormat("mm:ss", Locale.getDefault()) }
         val releaseYear = track.releaseDate.substring(0, 4)
@@ -36,8 +46,8 @@ class PlayerActivity : AppCompatActivity() {
         binding.playTime.text = dateFormat.format(track.trackTimeMillis)
 
         if (track.collectionName.isNullOrEmpty()) {
-            binding.trackAlbum.visibility=View.GONE
-            binding.album.visibility=View.GONE
+            binding.trackAlbum.visibility = View.GONE
+            binding.album.visibility = View.GONE
         } else {
             binding.trackAlbum.text = track.collectionName
         }
@@ -48,7 +58,14 @@ class PlayerActivity : AppCompatActivity() {
         Glide.with(applicationContext)
             .load(track.artworkUrl100.replaceAfterLast('/', "512x512bb.jpg"))
             .centerCrop()
-            .transform(RoundedCorners(dpToPx(cornerRadius, applicationContext)))
+            .transform(
+                RoundedCorners(
+                    GeneralFunctions.dpToPx(
+                        cornerRadius,
+                        applicationContext
+                    )
+                )
+            )
             .placeholder(R.drawable.placeholder)
             .into(binding.cover)
 
@@ -56,11 +73,5 @@ class PlayerActivity : AppCompatActivity() {
         imageBack.setOnClickListener {
             finish()
         }
-    }
-
-    private fun dpToPx(dp: Float, context: Context): Int {
-        return TypedValue.applyDimension(
-            TypedValue.COMPLEX_UNIT_DIP, dp, context.resources.displayMetrics
-        ).toInt()
     }
 }
