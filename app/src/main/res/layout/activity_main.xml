@@ -8,10 +8,14 @@
     android:orientation="vertical">
 
     <TextView
-        style="@style/TextOfPanelHeaderStyle"
+        style="@style/TextMedium22"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/padding_12dp"
+        android:paddingTop="@dimen/padding_10dp"
+        android:paddingBottom="@dimen/padding_12dp"
         android:layout_marginLeft="@dimen/panel_header_4dp"
         android:layout_marginVertical="@dimen/panel_header_4dp"
-        android:layout_marginRight="52dp"
         android:paddingRight="62sp"
         android:text="@string/playlist_maker"
         android:textColor="@color/white" />

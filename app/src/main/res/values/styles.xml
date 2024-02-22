@@ -66,21 +66,16 @@
         <item name="android:gravity">center</item>
     </style>
 
-    <style name="TextOfPanelHeaderStyle">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
+    <style name="TextMedium22">
         <item name="android:fontFamily">@font/ys_display_medium</item>
         <item name="android:textFontWeight">500</item>
         <item name="android:textSize">@dimen/primary_text_size_22sp</item>
         <item name="android:textColor">?attr/colorOnPrimary</item>
-        <item name="android:paddingLeft">12sp</item>
-        <item name="android:paddingTop">10sp</item>
-        <item name="android:paddingBottom">12sp</item>
     </style>
 
     <style name="ImageViewBackStyle">
         <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
         <item name="android:src">@drawable/vector</item>
         <item name="android:padding">@dimen/padding_16dp</item>
         <item name="tint">?attr/colorOnPrimary</item>
@@ -89,6 +84,12 @@
     <style name="TextOfArtistAndTime">
         <item name="android:textColor">?attr/colorOnSecondary</item>
         <item name="android:textSize">11sp</item>
+        <item name="android:fontFamily">@font/ys_display_regular</item>
+        <item name="android:textFontWeight">400</item>
+    </style>
+
+    <style name="TextRegular13">
+        <item name="android:textSize">13sp</item>
         <item name="android:fontFamily">@font/ys_display_regular</item>
         <item name="android:textFontWeight">400</item>
     </style>

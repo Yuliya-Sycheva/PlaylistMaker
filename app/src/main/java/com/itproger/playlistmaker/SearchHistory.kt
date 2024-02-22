@@ -9,7 +9,7 @@ const val maxCountOfTracksInHistory = 10
 
 class SearchHistory(private val sharedPreferences: SharedPreferences) {
 
-    fun saveTrack(track: MutableList<Track>) {
+    fun saveTrack(track: List<Track>) {
         val historyTracks = readTracks().toMutableList()
 
         historyTracks.removeAll { existingTrack ->

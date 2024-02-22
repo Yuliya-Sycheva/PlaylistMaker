@@ -15,7 +15,12 @@
 
         <TextView
             android:id="@+id/message"
-            style="@style/TextOfPanelHeaderStyle"
+            style="@style/TextMedium22"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/padding_12dp"
+            android:paddingTop="@dimen/padding_10dp"
+            android:paddingBottom="@dimen/padding_12dp"
             android:text="@string/search" />
     </LinearLayout>
 
