@@ -30,4 +30,8 @@ class TrackAdapter(
         trackList.clear()
         trackList.addAll(newTracks)
     }
+
+    fun interface TrackClickListener {
+        fun onTrackClick(track: Track)
+    }
 }
