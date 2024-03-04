@@ -3,8 +3,12 @@ package com.itproger.playlistmaker
 import android.media.MediaPlayer
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.util.Log
 import android.view.View
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
@@ -16,6 +20,7 @@ import java.util.Locale
 class PlayerActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityPlayerBinding
+    private var mainThreadHandler: Handler? = null
 
     private companion object {
         const val CLICKED_TRACK: String = "clicked_track"
@@ -23,7 +28,8 @@ class PlayerActivity : AppCompatActivity() {
         const val STATE_PREPARED = 1
         const val STATE_PLAYING = 2
         const val STATE_PAUSED = 3
-
+        const val DELAY = 500L
+        const val TRACK_FINISH = 29_900L
     }
 
     private var playerState = STATE_DEFAULT
@@ -34,6 +40,8 @@ class PlayerActivity : AppCompatActivity() {
         binding = ActivityPlayerBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        mainThreadHandler = Handler(Looper.getMainLooper())
+
 
         val track = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             intent.getParcelableExtra(CLICKED_TRACK, Track::class.java)
@@ -43,7 +51,7 @@ class PlayerActivity : AppCompatActivity() {
 
         if (track != null) {
             setTrackData(track)
-            preparePlayer(track) //добавила сюда
+            preparePlayer(track)
         }
 
         binding.playButton.setOnClickListener {
@@ -59,6 +67,7 @@ class PlayerActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         mediaPlayer.release()
+        Log.d("Mistake", "Destroy")
     }
 
     private fun setTrackData(track: Track) {
@@ -69,9 +78,14 @@ class PlayerActivity : AppCompatActivity() {
         binding.trackName.text = track.trackName
         binding.artistName.text = track.artistName
         binding.trackDuration.text = dateFormat.format(track.trackTimeMillis)
-        binding.playTime.text = dateFormat.format(track.trackTimeMillis)
+        binding.playTime.text = String.format("%02d:%02d", 0, 0)
         binding.playButton.setImageResource(R.drawable.play)  //добавила, чтобы сразу плей стояло
-        binding.playButton.setBackgroundColor(ContextCompat.getColor(this, android.R.color.transparent)) //добавила для прозрачного фона за кнопками
+        binding.playButton.setBackgroundColor(
+            ContextCompat.getColor(
+                this,
+                android.R.color.transparent
+            )
+        ) //добавила для прозрачного фона за кнопками
 
         if (track.collectionName.isNullOrEmpty()) {
             binding.trackAlbum.visibility = View.GONE
@@ -109,10 +123,13 @@ class PlayerActivity : AppCompatActivity() {
         mediaPlayer.setOnPreparedListener {
             binding.playButton.isEnabled = true
             playerState = STATE_PREPARED
+            Log.d("Mistake", "preparePlayer")
         }
         mediaPlayer.setOnCompletionListener {
             binding.playButton.setImageResource(R.drawable.play)
             playerState = STATE_PREPARED
+           binding.playTime.text = String.format("%02d:%02d", 0, 0)
+            Log.d("Mistake", "OnCompletionListener")
         }
     }
 
@@ -120,12 +137,15 @@ class PlayerActivity : AppCompatActivity() {
         mediaPlayer.start()
         binding.playButton.setImageResource(R.drawable.pause)
         playerState = STATE_PLAYING
+        Log.d("Mistake", "startPlayer")
+        startTimer()
     }
 
     private fun pausePlayer() {
         mediaPlayer.pause()
         binding.playButton.setImageResource(R.drawable.play)
         playerState = STATE_PAUSED
+        mainThreadHandler?.removeCallbacksAndMessages(null)
     }
 
     private fun playbackControl() {
@@ -133,10 +153,32 @@ class PlayerActivity : AppCompatActivity() {
             STATE_PLAYING -> {
                 pausePlayer()
             }
-
             STATE_PREPARED, STATE_PAUSED -> {
                 startPlayer()
             }
         }
+    }
+
+    private fun startTimer() {
+        mainThreadHandler?.postDelayed(
+            object : Runnable {
+                override fun run() {
+                    binding.playTime.text = if (mediaPlayer.currentPosition < TRACK_FINISH) {SimpleDateFormat(
+                        "mm:ss",
+                        Locale.getDefault()
+                    ).format(mediaPlayer.currentPosition)}
+                    else {
+                        String.format("%02d:%02d", 0, 0)
+                    }
+                    // И снова планируем то же действие через пол секунды
+                        mainThreadHandler?.postDelayed(
+                            this,
+                            DELAY,
+                        )
+
+                }
+            },
+            DELAY
+        )
     }
 }
