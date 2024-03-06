@@ -83,13 +83,13 @@ class SearchActivity : AppCompatActivity() {
         binding.historyLayout.visibility = View.GONE
 
 
-//        binding.query.setOnEditorActionListener { _, actionId, _ ->
-//            if (actionId == EditorInfo.IME_ACTION_DONE) {
-//               // searchTrack(binding.query.text.toString())
-//                searchTrack()
-//            }
-//            false
-//        }
+        binding.query.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                handler.removeCallbacks(searchRunnable)
+                searchTrack()
+            }
+            false
+        }
 
         binding.query.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus && binding.query.text.isEmpty()) {
@@ -128,6 +128,13 @@ class SearchActivity : AppCompatActivity() {
             }
 
             override fun afterTextChanged(s: Editable?) {
+                if (s.isNullOrEmpty()) {
+                    tracks.clear()
+                    binding.trackList.adapter?.notifyDataSetChanged()
+                    binding.placeholderMessage.visibility = View.GONE
+                    binding.placeholderImage.visibility = View.GONE
+                    binding.updateButton.visibility = View.GONE
+                }
             }
         }
 
@@ -137,7 +144,6 @@ class SearchActivity : AppCompatActivity() {
         }
 
         binding.updateButton.setOnClickListener {
-            // searchTrack(binding.query.text.toString())
             searchTrack()
         }
         binding.trackList.layoutManager = LinearLayoutManager(this)
@@ -197,7 +203,7 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun searchTrack() {
-        if (binding.query.text.toString().isEmpty()) {  // чтобы после крестика не выскакивало, что ничего не нашлось
+        if (binding.query.text.toString().isBlank()) {  // чтобы после крестика не выскакивало, что ничего не нашлось
             return
         }
         binding.historyLayout.visibility = View.GONE
@@ -220,6 +226,8 @@ class SearchActivity : AppCompatActivity() {
                             tracks.addAll(trackResponse.results)
                             binding.trackList.adapter?.notifyDataSetChanged()
                             showMessage("")
+
+                            hideHistory()
 
                             // Обновление истории поиска
                             val historyTracks = searchHistory.readTracks().toMutableList()
@@ -271,7 +279,12 @@ class SearchActivity : AppCompatActivity() {
         }
         return current
     }
-}
 
-//вопрос: нужно ли оставить кнопку done?  и если да, должна ли она работать?
-// когда запрос выдал треков меньше 10 штук, остается "вы искали" и список истории и очистить историю
+    private fun hideHistory() {
+        with(binding) {
+            tracksHistoryList.visibility = View.GONE
+            youWereLookingFor.visibility = View.GONE
+            cleanHistory.visibility = View.GONE
+        }
+    }
+}

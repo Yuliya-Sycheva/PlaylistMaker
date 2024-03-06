@@ -8,7 +8,6 @@ import android.os.Looper
 import android.util.Log
 import android.view.View
 import android.widget.ImageView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
@@ -30,6 +29,7 @@ class PlayerActivity : AppCompatActivity() {
         const val STATE_PAUSED = 3
         const val DELAY = 500L
         const val TRACK_FINISH = 29_900L
+        const val MISTAKE = "Mistake"
     }
 
     private var playerState = STATE_DEFAULT
@@ -67,7 +67,7 @@ class PlayerActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         mediaPlayer.release()
-        Log.d("Mistake", "Destroy")
+        Log.d(MISTAKE, "Destroy")
     }
 
     private fun setTrackData(track: Track) {
@@ -75,17 +75,20 @@ class PlayerActivity : AppCompatActivity() {
         val dateFormat by lazy { SimpleDateFormat("mm:ss", Locale.getDefault()) }
         val releaseYear = track.releaseDate.substring(0, 4)
 
-        binding.trackName.text = track.trackName
-        binding.artistName.text = track.artistName
-        binding.trackDuration.text = dateFormat.format(track.trackTimeMillis)
-        binding.playTime.text = String.format("%02d:%02d", 0, 0)
-        binding.playButton.setImageResource(R.drawable.play)  //добавила, чтобы сразу плей стояло
+        with(binding) {
+            trackName.text = track.trackName
+            artistName.text = track.artistName
+            trackDuration.text = dateFormat.format(track.trackTimeMillis)
+            playTime.text = String.format("%02d:%02d", 0, 0)
+            playButton.setImageResource(R.drawable.play)
+        }
         binding.playButton.setBackgroundColor(
             ContextCompat.getColor(
                 this,
                 android.R.color.transparent
             )
-        ) //добавила для прозрачного фона за кнопками
+        )
+        //добавила для прозрачного фона за кнопками
 
         if (track.collectionName.isNullOrEmpty()) {
             binding.trackAlbum.visibility = View.GONE
@@ -123,13 +126,13 @@ class PlayerActivity : AppCompatActivity() {
         mediaPlayer.setOnPreparedListener {
             binding.playButton.isEnabled = true
             playerState = STATE_PREPARED
-            Log.d("Mistake", "preparePlayer")
+            Log.d(MISTAKE, "preparePlayer")
         }
         mediaPlayer.setOnCompletionListener {
             binding.playButton.setImageResource(R.drawable.play)
             playerState = STATE_PREPARED
-           binding.playTime.text = String.format("%02d:%02d", 0, 0)
-            Log.d("Mistake", "OnCompletionListener")
+            binding.playTime.text = String.format("%02d:%02d", 0, 0)
+            Log.d(MISTAKE, "OnCompletionListener")
         }
     }
 
@@ -137,7 +140,7 @@ class PlayerActivity : AppCompatActivity() {
         mediaPlayer.start()
         binding.playButton.setImageResource(R.drawable.pause)
         playerState = STATE_PLAYING
-        Log.d("Mistake", "startPlayer")
+        Log.d(MISTAKE, "startPlayer")
         startTimer()
     }
 
@@ -153,6 +156,7 @@ class PlayerActivity : AppCompatActivity() {
             STATE_PLAYING -> {
                 pausePlayer()
             }
+
             STATE_PREPARED, STATE_PAUSED -> {
                 startPlayer()
             }
@@ -163,18 +167,19 @@ class PlayerActivity : AppCompatActivity() {
         mainThreadHandler?.postDelayed(
             object : Runnable {
                 override fun run() {
-                    binding.playTime.text = if (mediaPlayer.currentPosition < TRACK_FINISH) {SimpleDateFormat(
-                        "mm:ss",
-                        Locale.getDefault()
-                    ).format(mediaPlayer.currentPosition)}
-                    else {
+                    binding.playTime.text = if (mediaPlayer.currentPosition < TRACK_FINISH) {
+                        SimpleDateFormat(
+                            "mm:ss",
+                            Locale.getDefault()
+                        ).format(mediaPlayer.currentPosition)
+                    } else {
                         String.format("%02d:%02d", 0, 0)
                     }
                     // И снова планируем то же действие через пол секунды
-                        mainThreadHandler?.postDelayed(
-                            this,
-                            DELAY,
-                        )
+                    mainThreadHandler?.postDelayed(
+                        this,
+                        DELAY,
+                    )
 
                 }
             },
