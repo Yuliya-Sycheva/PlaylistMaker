@@ -4,21 +4,15 @@ import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.google.gson.Gson
-import com.itproger.playlistmaker.databinding.ActivityLibraryBinding
 import com.itproger.playlistmaker.databinding.ActivitySearchBinding
 import retrofit2.Call
 import retrofit2.Callback
@@ -27,6 +21,20 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 class SearchActivity : AppCompatActivity() {
+
+    private companion object {
+        const val SEARCH_TEXT = "SEARCH_TEXT"
+        const val SEARCH_HISTORY_PREFERENCES = "playlist_maker_search_history_preferences"
+        const val CLICKED_TRACK: String = "clicked_track"
+        const val SEARCH_DEBOUNCE_DELAY = 2000L
+        const val CLICK_DEBOUNCE_DELAY = 1000L
+    }
+
+    private var isClickAllowed = true
+
+    private val handler = Handler(Looper.getMainLooper())
+
+    private val searchRunnable = Runnable { searchTrack() }
 
     private lateinit var binding: ActivitySearchBinding
 
@@ -47,16 +55,20 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var historyTracks: MutableList<Track>
 
     private val historyTrackClickListener: (Track) -> Unit = { clickedTrack ->
-        val playerIntent = Intent(this, PlayerActivity::class.java)
-        playerIntent.putExtra(CLICKED_TRACK, clickedTrack)
-        startActivity(playerIntent)
+        if (clickDebounce()) {
+            val playerIntent = Intent(this, PlayerActivity::class.java)
+            playerIntent.putExtra(CLICKED_TRACK, clickedTrack)
+            startActivity(playerIntent)
+        }
     }
 
     private val currentTrackClickListener: (Track) -> Unit = { clickedTrack ->
-        searchHistory.saveTrack(listOf(clickedTrack))
-        val playerIntent = Intent(this, PlayerActivity::class.java)
-        playerIntent.putExtra(CLICKED_TRACK, clickedTrack)
-        startActivity(playerIntent)
+        if (clickDebounce()) {
+            searchHistory.saveTrack(listOf(clickedTrack))
+            val playerIntent = Intent(this, PlayerActivity::class.java)
+            playerIntent.putExtra(CLICKED_TRACK, clickedTrack)
+            startActivity(playerIntent)
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -73,7 +85,8 @@ class SearchActivity : AppCompatActivity() {
 
         binding.query.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
-                searchTrack(binding.query.text.toString())
+                handler.removeCallbacks(searchRunnable)
+                searchTrack()
             }
             false
         }
@@ -111,18 +124,27 @@ class SearchActivity : AppCompatActivity() {
                 binding.clearIcon.visibility = clearButtonVisibility(s)
                 binding.historyLayout.visibility =
                     if (binding.query.hasFocus() && s?.isEmpty() == true) View.VISIBLE else View.GONE
+                searchDebounce()
             }
 
             override fun afterTextChanged(s: Editable?) {
+                if (s.isNullOrEmpty()) {
+                    tracks.clear()
+                    binding.trackList.adapter?.notifyDataSetChanged()
+                    binding.placeholderMessage.visibility = View.GONE
+                    binding.placeholderImage.visibility = View.GONE
+                    binding.updateButton.visibility = View.GONE
+                }
             }
         }
+
         binding.query.addTextChangedListener(simpleTextWatcher)
         savedInstanceState?.getString(SEARCH_TEXT)?.let {
             binding.query.setText(it)
         }
 
         binding.updateButton.setOnClickListener {
-            searchTrack(binding.query.text.toString())
+            searchTrack()
         }
         binding.trackList.layoutManager = LinearLayoutManager(this)
 
@@ -180,14 +202,22 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
-    private fun searchTrack(searchText: String) {
-        iTunesService.search(searchText)
+    private fun searchTrack() {
+        if (binding.query.text.toString().isBlank()) {  // чтобы после крестика не выскакивало, что ничего не нашлось
+            return
+        }
+        binding.historyLayout.visibility = View.GONE
+        binding.placeholderImage.visibility = View.GONE
+        binding.updateButton.visibility = View.GONE
+        binding.progressBar.visibility = View.VISIBLE
+        showMessage("")
+        iTunesService.search(binding.query.text.toString())
             .enqueue(object : Callback<TrackResponse> {
                 override fun onResponse(
                     call: Call<TrackResponse>,
                     response: Response<TrackResponse>,
-
-                    ) {
+                ) {
+                    binding.progressBar.visibility = View.GONE
                     if (response.isSuccessful) {
                         val trackResponse = response.body()
                         Log.d("TRANSLATION_LOG", "Status code: ${response.code()}")
@@ -196,6 +226,8 @@ class SearchActivity : AppCompatActivity() {
                             tracks.addAll(trackResponse.results)
                             binding.trackList.adapter?.notifyDataSetChanged()
                             showMessage("")
+
+                            hideHistory()
 
                             // Обновление истории поиска
                             val historyTracks = searchHistory.readTracks().toMutableList()
@@ -224,6 +256,7 @@ class SearchActivity : AppCompatActivity() {
                     Log.d("TRANSLATION_LOG", "Бяда")
                     showMessage(getString(R.string.something_went_wrong))
                     tracks.clear()
+                    binding.progressBar.visibility = View.GONE
                     binding.trackList.adapter?.notifyDataSetChanged()
                     binding.placeholderImage.visibility = View.VISIBLE
                     binding.updateButton.visibility = View.VISIBLE
@@ -233,9 +266,25 @@ class SearchActivity : AppCompatActivity() {
             })
     }
 
-    private companion object {
-        const val SEARCH_TEXT = "SEARCH_TEXT"
-        const val SEARCH_HISTORY_PREFERENCES = "playlist_maker_search_history_preferences"
-        const val CLICKED_TRACK: String = "clicked_track"
+    private fun searchDebounce() {
+        handler.removeCallbacks(searchRunnable)
+        handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
+    }
+
+    private fun clickDebounce(): Boolean {
+        val current = isClickAllowed
+        if (isClickAllowed) {
+            isClickAllowed = false
+            handler.postDelayed({ isClickAllowed = true }, CLICK_DEBOUNCE_DELAY)
+        }
+        return current
+    }
+
+    private fun hideHistory() {
+        with(binding) {
+            tracksHistoryList.visibility = View.GONE
+            youWereLookingFor.visibility = View.GONE
+            cleanHistory.visibility = View.GONE
+        }
     }
 }
