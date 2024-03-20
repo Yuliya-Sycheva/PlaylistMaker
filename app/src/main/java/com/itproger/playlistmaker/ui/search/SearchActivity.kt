@@ -1,4 +1,4 @@
-package com.itproger.playlistmaker
+package com.itproger.playlistmaker.ui.search
 
 import android.content.Context
 import android.content.Intent
@@ -13,7 +13,14 @@ import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.itproger.playlistmaker.data.network.ITunesApi
+import com.itproger.playlistmaker.R
+import com.itproger.playlistmaker.SearchHistory
+import com.itproger.playlistmaker.domain.models.Track
+import com.itproger.playlistmaker.ui.TrackAdapter
+import com.itproger.playlistmaker.data.dto.TrackResponse
 import com.itproger.playlistmaker.databinding.ActivitySearchBinding
+import com.itproger.playlistmaker.ui.player.PlayerActivity
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -149,7 +156,7 @@ class SearchActivity : AppCompatActivity() {
         binding.trackList.layoutManager = LinearLayoutManager(this)
 
         val sharedPreferences =
-            getSharedPreferences(Companion.SEARCH_HISTORY_PREFERENCES, MODE_PRIVATE)
+            getSharedPreferences(SEARCH_HISTORY_PREFERENCES, MODE_PRIVATE)
         searchHistory = SearchHistory(sharedPreferences)
 
         binding.trackList.adapter = TrackAdapter(tracks, currentTrackClickListener)

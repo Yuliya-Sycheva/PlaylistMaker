@@ -1,4 +1,4 @@
-package com.itproger.playlistmaker
+package com.itproger.playlistmaker.ui.player
 
 import android.media.MediaPlayer
 import android.os.Build
@@ -12,6 +12,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.itproger.playlistmaker.GeneralFunctions
+import com.itproger.playlistmaker.R
+import com.itproger.playlistmaker.domain.models.Track
 import com.itproger.playlistmaker.databinding.ActivityPlayerBinding
 import java.text.SimpleDateFormat
 import java.util.Locale

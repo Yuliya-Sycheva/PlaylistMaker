@@ -3,6 +3,7 @@ package com.itproger.playlistmaker
 import android.content.SharedPreferences
 import android.util.Log
 import com.google.gson.Gson
+import com.itproger.playlistmaker.domain.models.Track
 
 const val HISTORY_TRACKS_LIST_KEY = "history_tracks_list"
 const val maxCountOfTracksInHistory = 10
