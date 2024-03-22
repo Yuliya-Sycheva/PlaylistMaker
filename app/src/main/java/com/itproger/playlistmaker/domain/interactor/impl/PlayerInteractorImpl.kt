@@ -5,25 +5,36 @@ import com.itproger.playlistmaker.domain.interactor.PlayerInteractor
 import com.itproger.playlistmaker.domain.models.Track
 
 class PlayerInteractorImpl(
-    private val repository: PlayerRepository
+    private var playerRepository: PlayerRepository
 ) : PlayerInteractor {
+    override var onPlayerStateChanged: (state: Int) -> Unit
+        get() = playerRepository.onPlayerStateChanged
+        set(value) {playerRepository.onPlayerStateChanged=value}
+    override var onPlayerCompletion: () -> Unit
+        get() = playerRepository.onPlayerCompletion
+        set(value) {playerRepository.onPlayerCompletion = value}
+    override val playerDuration: Int
+        get() = playerRepository.playerDuration
+    override val playerCurrentPosition: Int
+        get() = playerRepository.playerCurrentPosition
+
     override fun preparePlayer(track: Track) {
-        repository.preparePlayer(track)
+        playerRepository.preparePlayer(track)
     }
 
     override fun startPlayer() {
-        repository.startPlayer()
+        playerRepository.startPlayer()
     }
 
     override fun pausePlayer() {
-        repository.pausePlayer()
+        playerRepository.pausePlayer()
     }
 
     override fun playbackControl() {
-        repository.playbackControl()
+        playerRepository.playbackControl()
     }
 
     override fun releasePlayer() {
-        repository.releasePlayer()
+        playerRepository.releasePlayer()
     }
 }

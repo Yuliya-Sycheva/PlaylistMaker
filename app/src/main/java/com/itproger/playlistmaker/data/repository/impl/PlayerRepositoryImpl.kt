@@ -8,13 +8,14 @@ import com.itproger.playlistmaker.domain.models.Track
 import com.itproger.playlistmaker.ui.player.PlayerActivity
 
 class PlayerRepositoryImpl(
-    private val mediaPlayer: MediaPlayer,
-    private val onPlayerStateChanged: (state: Int) -> Unit,
-    private val onPlayerCompletion: () -> Unit
+    private val mediaPlayer: MediaPlayer
 
-) : PlayerRepository{
+) : PlayerRepository {
 
     private var playerState = STATE_DEFAULT
+
+    private var localOnPlayerStateChanged: (state: Int) -> Unit = {}
+    private var localOnPlayerCompletion: () -> Unit = {}
 
     init {
         mediaPlayer.setOnPreparedListener {
@@ -24,9 +25,25 @@ class PlayerRepositoryImpl(
         mediaPlayer.setOnCompletionListener {
             playerState = STATE_COMPLETED
             onPlayerStateChanged(playerState)
-            //////////////////////////////////////////////////////////////добавить
         }
     }
+
+    override var onPlayerStateChanged: (state: Int) -> Unit
+        get() = localOnPlayerStateChanged
+        set(value) {
+            localOnPlayerStateChanged = value
+        }
+
+    override var onPlayerCompletion: () -> Unit
+        get() = localOnPlayerCompletion
+        set(value) {
+            localOnPlayerCompletion = value
+        }
+
+    override val playerDuration: Int
+        get() = mediaPlayer.duration
+    override val playerCurrentPosition: Int
+        get() = mediaPlayer.currentPosition
 
 
     override fun preparePlayer(track: Track) {
