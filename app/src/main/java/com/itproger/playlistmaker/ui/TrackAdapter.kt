@@ -1,10 +1,9 @@
-package com.itproger.playlistmaker
-import android.content.Intent
+package com.itproger.playlistmaker.ui
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.Toast
-import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
+import com.itproger.playlistmaker.R
+import com.itproger.playlistmaker.domain.models.Track
 
 class TrackAdapter(
     private val trackList: MutableList<Track>,

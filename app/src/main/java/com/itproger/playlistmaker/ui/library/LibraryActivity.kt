@@ -1,9 +1,8 @@
-package com.itproger.playlistmaker
+package com.itproger.playlistmaker.ui.library
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.itproger.playlistmaker.databinding.ActivityLibraryBinding
-import com.itproger.playlistmaker.databinding.ActivityMainBinding
 
 class LibraryActivity : AppCompatActivity() {
     private lateinit var binding: ActivityLibraryBinding

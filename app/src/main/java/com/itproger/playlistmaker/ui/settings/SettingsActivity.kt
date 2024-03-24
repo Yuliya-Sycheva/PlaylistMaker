@@ -1,12 +1,11 @@
-package com.itproger.playlistmaker
+package com.itproger.playlistmaker.ui.settings
 
 import android.content.Intent
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.ImageView
-import com.google.android.material.switchmaterial.SwitchMaterial
-import com.itproger.playlistmaker.databinding.ActivityMainBinding
+import com.itproger.playlistmaker.App
+import com.itproger.playlistmaker.R
 import com.itproger.playlistmaker.databinding.ActivitySettingsBinding
 
 class SettingsActivity : AppCompatActivity() {
