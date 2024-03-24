@@ -1,11 +1,8 @@
 package com.itproger.playlistmaker.data.repository.impl
 
 import android.media.MediaPlayer
-import android.util.Log
-import com.itproger.playlistmaker.R
-import com.itproger.playlistmaker.data.repository.PlayerRepository
+import com.itproger.playlistmaker.domain.repository.PlayerRepository
 import com.itproger.playlistmaker.domain.models.Track
-import com.itproger.playlistmaker.ui.player.PlayerActivity
 
 class PlayerRepositoryImpl(
     private val mediaPlayer: MediaPlayer

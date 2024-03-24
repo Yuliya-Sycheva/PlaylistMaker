@@ -1,6 +1,6 @@
 package com.itproger.playlistmaker.domain.interactor.impl
 
-import com.itproger.playlistmaker.data.repository.PlayerRepository
+import com.itproger.playlistmaker.domain.repository.PlayerRepository
 import com.itproger.playlistmaker.domain.interactor.PlayerInteractor
 import com.itproger.playlistmaker.domain.models.Track
 
@@ -9,10 +9,14 @@ class PlayerInteractorImpl(
 ) : PlayerInteractor {
     override var onPlayerStateChanged: (state: Int) -> Unit
         get() = playerRepository.onPlayerStateChanged
-        set(value) {playerRepository.onPlayerStateChanged=value}
+        set(value) {
+            playerRepository.onPlayerStateChanged = value
+        }
     override var onPlayerCompletion: () -> Unit
         get() = playerRepository.onPlayerCompletion
-        set(value) {playerRepository.onPlayerCompletion = value}
+        set(value) {
+            playerRepository.onPlayerCompletion = value
+        }
     override val playerDuration: Int
         get() = playerRepository.playerDuration
     override val playerCurrentPosition: Int
