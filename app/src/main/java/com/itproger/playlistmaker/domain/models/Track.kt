@@ -1,4 +1,4 @@
-package com.itproger.playlistmaker
+package com.itproger.playlistmaker.domain.models
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize

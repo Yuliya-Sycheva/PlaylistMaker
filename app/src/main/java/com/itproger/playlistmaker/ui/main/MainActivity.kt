@@ -1,10 +1,12 @@
-package com.itproger.playlistmaker
+package com.itproger.playlistmaker.ui.main
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Button
 import com.itproger.playlistmaker.databinding.ActivityMainBinding
+import com.itproger.playlistmaker.ui.library.LibraryActivity
+import com.itproger.playlistmaker.ui.search.SearchActivity
+import com.itproger.playlistmaker.ui.settings.SettingsActivity
 
 class MainActivity : AppCompatActivity() {
 

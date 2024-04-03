@@ -1,4 +1,4 @@
-package com.itproger.playlistmaker
+package com.itproger.playlistmaker.ui.player
 
 import android.media.MediaPlayer
 import android.os.Build
@@ -12,7 +12,18 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.itproger.playlistmaker.GeneralFunctions
+import com.itproger.playlistmaker.R
+import com.itproger.playlistmaker.domain.repository.PlayerRepository
+import com.itproger.playlistmaker.data.repository.impl.PlayerRepositoryImpl
+import com.itproger.playlistmaker.data.repository.impl.PlayerRepositoryImpl.Companion.STATE_COMPLETED
+import com.itproger.playlistmaker.data.repository.impl.PlayerRepositoryImpl.Companion.STATE_PAUSED
+import com.itproger.playlistmaker.data.repository.impl.PlayerRepositoryImpl.Companion.STATE_PLAYING
+import com.itproger.playlistmaker.data.repository.impl.PlayerRepositoryImpl.Companion.STATE_PREPARED
+import com.itproger.playlistmaker.domain.models.Track
 import com.itproger.playlistmaker.databinding.ActivityPlayerBinding
+import com.itproger.playlistmaker.domain.interactor.PlayerInteractor
+import com.itproger.playlistmaker.domain.interactor.impl.PlayerInteractorImpl
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -21,24 +32,33 @@ class PlayerActivity : AppCompatActivity() {
     private lateinit var binding: ActivityPlayerBinding
     private var mainThreadHandler: Handler? = null
 
-    private companion object {
-        const val CLICKED_TRACK: String = "clicked_track"
-        const val STATE_DEFAULT = 0
-        const val STATE_PREPARED = 1
-        const val STATE_PLAYING = 2
-        const val STATE_PAUSED = 3
-        const val DELAY = 500L
-        const val TRACK_FINISH = 29_900L
-        const val MISTAKE = "Mistake"
-    }
-
-    private var playerState = STATE_DEFAULT
     private var mediaPlayer = MediaPlayer()
+    private val playerRepository: PlayerRepository = PlayerRepositoryImpl(mediaPlayer)
+    private val playerInteractor: PlayerInteractor = PlayerInteractorImpl(playerRepository)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityPlayerBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        playerInteractor.onPlayerStateChanged = { state ->
+            when (state) {
+                STATE_PLAYING -> {
+                    startTimer()
+                    binding.playButton.setImageResource(R.drawable.pause)
+                }
+
+                STATE_PREPARED, STATE_PAUSED, STATE_COMPLETED -> {
+                    binding.playButton.setImageResource(R.drawable.play)
+                }
+            }
+        }
+
+        playerInteractor.onPlayerCompletion = {
+            binding.playButton.setImageResource(R.drawable.play)
+            binding.playTime.text = String.format("%02d:%02d", 0, 0)
+            Log.d(MISTAKE, "OnCompletionListener")
+        }
 
         mainThreadHandler = Handler(Looper.getMainLooper())
 
@@ -51,22 +71,23 @@ class PlayerActivity : AppCompatActivity() {
 
         if (track != null) {
             setTrackData(track)
-            preparePlayer(track)
+            playerInteractor.preparePlayer(track)
         }
 
         binding.playButton.setOnClickListener {
-            playbackControl()
+            playerInteractor.playbackControl()
         }
     }
 
     override fun onPause() {
         super.onPause()
-        pausePlayer()
+        playerInteractor.pausePlayer()
+        mainThreadHandler?.removeCallbacksAndMessages(null)
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        mediaPlayer.release()
+        playerInteractor.releasePlayer()
         Log.d(MISTAKE, "Destroy")
     }
 
@@ -120,61 +141,25 @@ class PlayerActivity : AppCompatActivity() {
         }
     }
 
-    private fun preparePlayer(track: Track) {
-        mediaPlayer.setDataSource(track.previewUrl)
-        mediaPlayer.prepareAsync()
-        mediaPlayer.setOnPreparedListener {
-            binding.playButton.isEnabled = true
-            playerState = STATE_PREPARED
-            Log.d(MISTAKE, "preparePlayer")
-        }
-        mediaPlayer.setOnCompletionListener {
-            binding.playButton.setImageResource(R.drawable.play)
-            playerState = STATE_PREPARED
-            binding.playTime.text = String.format("%02d:%02d", 0, 0)
-            Log.d(MISTAKE, "OnCompletionListener")
-        }
-    }
-
-    private fun startPlayer() {
-        mediaPlayer.start()
-        binding.playButton.setImageResource(R.drawable.pause)
-        playerState = STATE_PLAYING
-        Log.d(MISTAKE, "startPlayer")
-        startTimer()
-    }
-
-    private fun pausePlayer() {
-        mediaPlayer.pause()
-        binding.playButton.setImageResource(R.drawable.play)
-        playerState = STATE_PAUSED
-        mainThreadHandler?.removeCallbacksAndMessages(null)
-    }
-
-    private fun playbackControl() {
-        when (playerState) {
-            STATE_PLAYING -> {
-                pausePlayer()
-            }
-
-            STATE_PREPARED, STATE_PAUSED -> {
-                startPlayer()
-            }
-        }
-    }
-
     private fun startTimer() {
         mainThreadHandler?.postDelayed(
             object : Runnable {
                 override fun run() {
-                    binding.playTime.text = if (mediaPlayer.currentPosition < TRACK_FINISH) {
-                        SimpleDateFormat(
-                            "mm:ss",
-                            Locale.getDefault()
-                        ).format(mediaPlayer.currentPosition)
-                    } else {
-                        String.format("%02d:%02d", 0, 0)
-                    }
+                    val maxTrackDuration: Long =
+                        if (playerInteractor.playerDuration > TRACK_FINISH) {
+                            TRACK_FINISH
+                        } else {
+                            (playerInteractor.playerDuration.toLong())
+                        }
+                    binding.playTime.text =
+                        if (mediaPlayer.currentPosition < maxTrackDuration) {
+                            SimpleDateFormat(
+                                "mm:ss",
+                                Locale.getDefault()
+                            ).format(playerInteractor.playerCurrentPosition)
+                        } else {
+                            String.format("%02d:%02d", 0, 0)
+                        }
                     // И снова планируем то же действие через пол секунды
                     mainThreadHandler?.postDelayed(
                         this,
@@ -185,5 +170,12 @@ class PlayerActivity : AppCompatActivity() {
             },
             DELAY
         )
+    }
+
+    private companion object {
+        const val CLICKED_TRACK: String = "clicked_track"
+        const val DELAY = 500L
+        const val TRACK_FINISH = 29_900L
+        const val MISTAKE = "Mistake"
     }
 }
