@@ -19,17 +19,17 @@ class App : Application() {
         super.onCreate()
         settingsInteractor = SettingsCreator.providesettingsInteractor(this)
         darkTheme = settingsInteractor.getThemeSettings().darkTheme
-     //   applyTheme(darkTheme)
+        applyTheme(darkTheme)
 
     }
 
-//    private fun applyTheme(darkThemeEnabled: Boolean) {
-//        AppCompatDelegate.setDefaultNightMode(
-//            if (darkThemeEnabled) {
-//                AppCompatDelegate.MODE_NIGHT_YES
-//            } else {
-//                AppCompatDelegate.MODE_NIGHT_NO
-//            }
-//        )
-//    }
+     fun applyTheme(darkThemeEnabled: Boolean) {
+        AppCompatDelegate.setDefaultNightMode(
+            if (darkThemeEnabled) {
+                AppCompatDelegate.MODE_NIGHT_YES
+            } else {
+                AppCompatDelegate.MODE_NIGHT_NO
+            }
+        )
+    }
 }

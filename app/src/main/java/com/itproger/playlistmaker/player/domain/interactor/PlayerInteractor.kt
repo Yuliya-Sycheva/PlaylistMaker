@@ -1,6 +1,7 @@
 package com.itproger.playlistmaker.player.domain.interactor
 
-import com.itproger.playlistmaker.player.domain.models.Track
+import com.itproger.playlistmaker.search.domain.models.Track
+
 
 interface PlayerInteractor {
 

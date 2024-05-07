@@ -2,7 +2,8 @@ package com.itproger.playlistmaker.player.domain.interactor.impl
 
 import com.itproger.playlistmaker.player.domain.repository.PlayerRepository
 import com.itproger.playlistmaker.player.domain.interactor.PlayerInteractor
-import com.itproger.playlistmaker.player.domain.models.Track
+import com.itproger.playlistmaker.search.domain.models.Track
+
 
 class PlayerInteractorImpl(
     private var playerRepository: PlayerRepository

@@ -21,7 +21,7 @@ class ExternalNavigatorImpl(private val context: Context) : ExternalNavigator {
                     context.getString(R.string.share_email)
                 )
                 type = "text/plain"
-                flags = Intent.FLAG_ACTIVITY_NEW_TASK  //т.к. запускаем не из Activity
+                flags = FLAG_ACTIVITY_NEW_TASK  //т.к. запускаем не из Activity
             }, null
         )
     }
@@ -45,7 +45,7 @@ class ExternalNavigatorImpl(private val context: Context) : ExternalNavigator {
                     arrayOf(context.getString(R.string.support_email))
                 )
                 putExtra(Intent.EXTRA_SUBJECT, context.getString(R.string.support_subject))
-                flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                flags = FLAG_ACTIVITY_NEW_TASK
             }
         )
     }

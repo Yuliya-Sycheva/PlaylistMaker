@@ -20,7 +20,7 @@ class SettingsViewModel(
 
 ) : ViewModel() {
 
-    private var themeLiveData = MutableLiveData<Boolean>()
+    private var themeLiveData = MutableLiveData(true)
 
     init {
         themeLiveData.value = settingsInteractor.getThemeSettings().darkTheme
@@ -61,7 +61,7 @@ class SettingsViewModel(
         Log.d("TEST", "clickSwitchTheme")
         themeLiveData.value = isChecked                        //
         settingsInteractor.updateThemeSetting(isChecked)
-        applyTheme(isChecked)
+              applyTheme(isChecked)
     }
 
 
@@ -78,7 +78,7 @@ class SettingsViewModel(
 }
 
 
-/
+
 //    companion object {
 //        fun getViewModelFactory(
 //            sharingInteractor: SharingInteractor,

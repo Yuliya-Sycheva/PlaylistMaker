@@ -8,7 +8,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.itproger.playlistmaker.utils.GeneralFunctions
 import com.itproger.playlistmaker.R
-import com.itproger.playlistmaker.player.domain.models.Track
+import com.itproger.playlistmaker.search.domain.models.Track
 import java.text.SimpleDateFormat
 import java.util.Locale
 

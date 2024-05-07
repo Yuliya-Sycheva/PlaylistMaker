@@ -3,12 +3,15 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.itproger.playlistmaker.R
-import com.itproger.playlistmaker.player.domain.models.Track
+import com.itproger.playlistmaker.search.domain.models.Track
 
 class TrackAdapter(
-    private val trackList: MutableList<Track>,
+  //  var trackList: MutableList<Track>,  // убрала private val для презентера, не уверена
     private val onClickListener: (clickedTrack : Track) -> Unit
 ) : RecyclerView.Adapter<TrackViewHolder>() {
+
+    var trackList: MutableList<Track> = mutableListOf()
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrackViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.track_view, parent, false)
         return TrackViewHolder(view)

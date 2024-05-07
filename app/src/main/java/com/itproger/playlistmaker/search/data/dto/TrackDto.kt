@@ -1,10 +1,10 @@
-package com.itproger.playlistmaker.player.domain.models
+package com.itproger.playlistmaker.search.data.dto
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class Track(
+data class TrackDto(
     val trackId: Int,
     val trackName: String,
     val artistName: String,

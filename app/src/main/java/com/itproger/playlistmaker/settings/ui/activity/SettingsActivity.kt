@@ -3,7 +3,6 @@ package com.itproger.playlistmaker.settings.ui.activity
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.lifecycle.ViewModelProvider
-import com.itproger.playlistmaker.utils.App
 import com.itproger.playlistmaker.databinding.ActivitySettingsBinding
 import com.itproger.playlistmaker.settings.ui.view_model.SettingsViewModel
 

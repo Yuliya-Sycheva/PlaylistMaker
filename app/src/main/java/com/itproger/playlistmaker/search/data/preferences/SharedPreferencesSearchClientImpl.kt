@@ -1,17 +1,19 @@
-package com.itproger.playlistmaker
+package com.itproger.playlistmaker.search.data.preferences
 
 import android.content.SharedPreferences
 import android.util.Log
 import com.google.gson.Gson
-import com.itproger.playlistmaker.player.domain.models.Track
+import com.itproger.playlistmaker.search.domain.models.Track
 
 const val HISTORY_TRACKS_LIST_KEY = "history_tracks_list"
 const val maxCountOfTracksInHistory = 10
 
-class SearchHistory(private val sharedPreferences: SharedPreferences) {
+class SharedPreferencesSearchClientImpl(private val sharedPreferences: SharedPreferences) :
+    SharedPreferencesSearchClient {
 
-    fun saveTrack(track: List<Track>) {
-        val historyTracks = readTracks().toMutableList()
+    override fun saveTrackToHistory(track: List<Track>) {
+
+        val historyTracks = readTracksFromHistory().toMutableList()
 
         historyTracks.removeAll { existingTrack ->
             track.any { it.trackId == existingTrack.trackId }
@@ -29,13 +31,13 @@ class SearchHistory(private val sharedPreferences: SharedPreferences) {
             .apply()
     }
 
-    fun readTracks(): Array<Track> {
+    override fun readTracksFromHistory(): Array<Track> {  //не забыть заменить на List
         val json = sharedPreferences.getString(HISTORY_TRACKS_LIST_KEY, null) ?: return emptyArray()
         Log.d("Test", "Читаю трек")
         return Gson().fromJson(json, Array<Track>::class.java)
     }
 
-    fun clearTracks() {
+    override fun clearHistory() {
         sharedPreferences.edit()
             .remove(HISTORY_TRACKS_LIST_KEY)
             .apply()

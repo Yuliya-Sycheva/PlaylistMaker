@@ -20,10 +20,11 @@ import com.itproger.playlistmaker.player.data.impl.PlayerRepositoryImpl.Companio
 import com.itproger.playlistmaker.player.data.impl.PlayerRepositoryImpl.Companion.STATE_PAUSED
 import com.itproger.playlistmaker.player.data.impl.PlayerRepositoryImpl.Companion.STATE_PLAYING
 import com.itproger.playlistmaker.player.data.impl.PlayerRepositoryImpl.Companion.STATE_PREPARED
-import com.itproger.playlistmaker.player.domain.models.Track
+
 import com.itproger.playlistmaker.databinding.ActivityPlayerBinding
 import com.itproger.playlistmaker.player.domain.interactor.PlayerInteractor
 import com.itproger.playlistmaker.player.domain.interactor.impl.PlayerInteractorImpl
+import com.itproger.playlistmaker.search.domain.models.Track
 import java.text.SimpleDateFormat
 import java.util.Locale
 
