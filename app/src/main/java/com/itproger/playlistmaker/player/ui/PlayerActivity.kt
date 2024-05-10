@@ -120,6 +120,8 @@ class PlayerActivity : AppCompatActivity() {
         }
     }
 
+
+
     private fun prepare() {  //??????
         binding.playButton.setImageResource(R.drawable.play)
         binding.playTime.text = String.format("%02d:%02d", 0, 0)

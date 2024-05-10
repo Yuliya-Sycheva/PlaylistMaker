@@ -7,11 +7,11 @@ import com.itproger.playlistmaker.search.domain.models.Track
 interface PlayerInteractor {
 
   //  var onPlayerStateChanged: (state: PlayerScreenState) -> Unit //убрать
-    var onPlayerCompletion: () -> Unit
+ //   var onPlayerCompletion: () -> Unit
     val playerDuration: Int
     val playerCurrentPosition: Int
 
-    fun preparePlayer(track: Track)
+    fun preparePlayer(track: Track, onPreparedListener: () -> Unit, onPlayerCompletion: () -> Unit)
     fun startPlayer()
     fun pausePlayer()
     //  fun playbackControl()
