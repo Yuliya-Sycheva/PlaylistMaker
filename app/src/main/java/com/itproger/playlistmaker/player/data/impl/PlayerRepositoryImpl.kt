@@ -26,6 +26,7 @@ class PlayerRepositoryImpl(
         mediaPlayer.setOnCompletionListener {
    //         playerState = PlayerScreenState.COMPLETED
    //         onPlayerStateChanged(playerState)
+            localOnPlayerCompletion.invoke()
         }
     }
 

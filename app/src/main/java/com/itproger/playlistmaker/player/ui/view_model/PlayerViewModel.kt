@@ -65,12 +65,12 @@ class PlayerViewModel(
 //        }
 //    }
 
-    init {
+    fun listenCompletion() {
         playerInteractor.onPlayerCompletion = {
-            renderState(PlayerStateInterface.Prepare)
+         //   renderState(PlayerStateInterface.Prepare)
             Log.d(MISTAKE, "Completed")
-            mainThreadHandler?.removeCallbacksAndMessages(null)  //gpt
-            releasePlayer() //gpt
+          //  mainThreadHandler?.removeCallbacksAndMessages(null)  //gpt =?
+          //  releasePlayer() //gpt=
         }
     }
 
@@ -86,20 +86,21 @@ class PlayerViewModel(
                         } else {
                             (playerInteractor.playerDuration.toLong())
                         }
-                    renderState(
-                        PlayerStateInterface.UpdatePlayingTime(
-                            time =
+//                    renderState(
+//                        PlayerStateInterface.UpdatePlayingTime(
+//                            time =
                             //                     if (mediaPlayer.currentPosition < maxTrackDuration) {
                             if (playerInteractor.playerCurrentPosition < maxTrackDuration) {
-                                SimpleDateFormat(
+                                renderState(PlayerStateInterface.UpdatePlayingTime(SimpleDateFormat(
                                     "mm:ss",
                                     Locale.getDefault()
-                                ).format(playerInteractor.playerCurrentPosition)
+                                ).format(playerInteractor.playerCurrentPosition)))
                             } else {
-                                String.format("%02d:%02d", 0, 0)
+                                renderState((PlayerStateInterface.Prepare))
+                                //  String.format("%02d:%02d", 0, 0)
                             }
-                        )
-                    )
+                     //   )
+                 //   )
                     // И снова планируем то же действие через пол секунды
                     mainThreadHandler?.postDelayed(
                         this,
@@ -121,6 +122,12 @@ class PlayerViewModel(
         renderState(PlayerStateInterface.Prepare)
         playerInteractor.preparePlayer(track)
         Log.d(MISTAKE, "Prepare")
+        playerInteractor.onPlayerCompletion  = {
+            Log.d(MISTAKE, "Completed")
+            renderState(PlayerStateInterface.Prepare)
+            mainThreadHandler?.removeCallbacksAndMessages(null)
+        }
+
     }
 
     fun startPlayer() {
