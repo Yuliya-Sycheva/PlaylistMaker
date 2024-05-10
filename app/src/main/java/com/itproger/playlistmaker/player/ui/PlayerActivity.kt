@@ -37,9 +37,9 @@ class PlayerActivity : AppCompatActivity() {
         }
 
         val track = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            intent.getParcelableExtra(CLICKED_TRACK, Track::class.java)
+            intent.getSerializableExtra(CLICKED_TRACK, Track::class.java) as Track
         } else {
-            intent.getParcelableExtra(CLICKED_TRACK)
+            intent.getSerializableExtra(CLICKED_TRACK) as Track
         }
 
         if (track != null) {
