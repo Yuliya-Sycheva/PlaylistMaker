@@ -1,29 +1,18 @@
 package com.itproger.playlistmaker.player.ui
 
-import android.media.MediaPlayer
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import android.util.Log
 import android.view.View
-import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.itproger.playlistmaker.utils.GeneralFunctions
 import com.itproger.playlistmaker.R
-import com.itproger.playlistmaker.player.domain.repository.PlayerRepository
-import com.itproger.playlistmaker.player.data.impl.PlayerRepositoryImpl
-import com.itproger.playlistmaker.player.data.impl.PlayerRepositoryImpl.Companion.STATE_COMPLETED
-import com.itproger.playlistmaker.player.data.impl.PlayerRepositoryImpl.Companion.STATE_PAUSED
-import com.itproger.playlistmaker.player.data.impl.PlayerRepositoryImpl.Companion.STATE_PLAYING
-import com.itproger.playlistmaker.player.data.impl.PlayerRepositoryImpl.Companion.STATE_PREPARED
-
 import com.itproger.playlistmaker.databinding.ActivityPlayerBinding
-import com.itproger.playlistmaker.player.domain.interactor.PlayerInteractor
-import com.itproger.playlistmaker.player.domain.interactor.impl.PlayerInteractorImpl
+import com.itproger.playlistmaker.player.ui.models.PlayerStateInterface
+import com.itproger.playlistmaker.player.ui.view_model.PlayerViewModel
 import com.itproger.playlistmaker.search.domain.models.Track
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -31,38 +20,21 @@ import java.util.Locale
 class PlayerActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityPlayerBinding
-    private var mainThreadHandler: Handler? = null
 
-    private var mediaPlayer = MediaPlayer()
-    private val playerRepository: PlayerRepository = PlayerRepositoryImpl(mediaPlayer)
-    private val playerInteractor: PlayerInteractor = PlayerInteractorImpl(playerRepository)
+    private lateinit var viewModel: PlayerViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityPlayerBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        playerInteractor.onPlayerStateChanged = { state ->
-            when (state) {
-                STATE_PLAYING -> {
-                    startTimer()
-                    binding.playButton.setImageResource(R.drawable.pause)
-                }
-
-                STATE_PREPARED, STATE_PAUSED, STATE_COMPLETED -> {
-                    binding.playButton.setImageResource(R.drawable.play)
-                }
-            }
+        viewModel = ViewModelProvider(
+            this,
+            PlayerViewModel.getViewModelFactory()
+        )[PlayerViewModel::class.java]
+        viewModel.observeState().observe(this) {
+            render(it)
         }
-
-        playerInteractor.onPlayerCompletion = {
-            binding.playButton.setImageResource(R.drawable.play)
-            binding.playTime.text = String.format("%02d:%02d", 0, 0)
-            Log.d(MISTAKE, "OnCompletionListener")
-        }
-
-        mainThreadHandler = Handler(Looper.getMainLooper())
-
 
         val track = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             intent.getParcelableExtra(CLICKED_TRACK, Track::class.java)
@@ -72,24 +44,22 @@ class PlayerActivity : AppCompatActivity() {
 
         if (track != null) {
             setTrackData(track)
-            playerInteractor.preparePlayer(track)
+            viewModel.preparePlayer(track)
         }
 
         binding.playButton.setOnClickListener {
-            playerInteractor.playbackControl()
+            viewModel.playbackControl()
         }
-    }
+    } // конец onCreate()
 
     override fun onPause() {
         super.onPause()
-        playerInteractor.pausePlayer()
-        mainThreadHandler?.removeCallbacksAndMessages(null)
+        viewModel.pausePlayer()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        playerInteractor.releasePlayer()
-        Log.d(MISTAKE, "Destroy")
+        viewModel.releasePlayer()
     }
 
     private fun setTrackData(track: Track) {
@@ -104,13 +74,12 @@ class PlayerActivity : AppCompatActivity() {
             playTime.text = String.format("%02d:%02d", 0, 0)
             playButton.setImageResource(R.drawable.play)
         }
-        binding.playButton.setBackgroundColor(
+        binding.playButton.setBackgroundColor(  //добавила для прозрачного фона за кнопками
             ContextCompat.getColor(
                 this,
                 android.R.color.transparent
             )
         )
-        //добавила для прозрачного фона за кнопками
 
         if (track.collectionName.isNullOrEmpty()) {
             binding.trackAlbum.visibility = View.GONE
@@ -136,47 +105,39 @@ class PlayerActivity : AppCompatActivity() {
             .placeholder(R.drawable.placeholder)
             .into(binding.cover)
 
-        val imageBack = findViewById<ImageView>(R.id.back)
-        imageBack.setOnClickListener {
+        binding.back.setOnClickListener {
             finish()
         }
     }
 
-    private fun startTimer() {
-        mainThreadHandler?.postDelayed(
-            object : Runnable {
-                override fun run() {
-                    val maxTrackDuration: Long =
-                        if (playerInteractor.playerDuration > TRACK_FINISH) {
-                            TRACK_FINISH
-                        } else {
-                            (playerInteractor.playerDuration.toLong())
-                        }
-                    binding.playTime.text =
-                        if (mediaPlayer.currentPosition < maxTrackDuration) {
-                            SimpleDateFormat(
-                                "mm:ss",
-                                Locale.getDefault()
-                            ).format(playerInteractor.playerCurrentPosition)
-                        } else {
-                            String.format("%02d:%02d", 0, 0)
-                        }
-                    // И снова планируем то же действие через пол секунды
-                    mainThreadHandler?.postDelayed(
-                        this,
-                        DELAY,
-                    )
+    private fun render(state: PlayerStateInterface) {
+        when (state) {
+            is PlayerStateInterface.Prepare -> prepare()
+            is PlayerStateInterface.Play -> play()
+            is PlayerStateInterface.Pause -> pause()
+            is PlayerStateInterface.UpdatePlayingTime -> updatePlayingTime(state.time)
+            else -> {}
+        }
+    }
 
-                }
-            },
-            DELAY
-        )
+    private fun prepare() {  //??????
+        binding.playButton.setImageResource(R.drawable.play)
+        binding.playTime.text = String.format("%02d:%02d", 0, 0)
+    }
+
+    private fun play() {
+        binding.playButton.setImageResource(R.drawable.pause)
+    }
+
+    private fun pause() {
+        binding.playButton.setImageResource(R.drawable.play)
+    }
+
+    private fun updatePlayingTime(time: String) {
+        binding.playTime.text = time
     }
 
     private companion object {
         const val CLICKED_TRACK: String = "clicked_track"
-        const val DELAY = 500L
-        const val TRACK_FINISH = 29_900L
-        const val MISTAKE = "Mistake"
     }
 }

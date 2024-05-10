@@ -1,36 +1,39 @@
 package com.itproger.playlistmaker.player.data.impl
 
 import android.media.MediaPlayer
+import com.itproger.playlistmaker.player.domain.models.PlayerScreenState
 import com.itproger.playlistmaker.player.domain.repository.PlayerRepository
 import com.itproger.playlistmaker.search.domain.models.Track
 
 
 class PlayerRepositoryImpl(
-    private val mediaPlayer: MediaPlayer
+   // private val mediaPlayer: MediaPlayer
 
 ) : PlayerRepository {
 
-    private var playerState = STATE_DEFAULT
+    private val mediaPlayer= MediaPlayer()  //add here
 
-    private var localOnPlayerStateChanged: (state: Int) -> Unit = {}
+  //  private var playerState = PlayerScreenState.DEFAULT
+
+  //  private var localOnPlayerStateChanged: (state: PlayerScreenState) -> Unit = {}
     private var localOnPlayerCompletion: () -> Unit = {}
 
     init {
         mediaPlayer.setOnPreparedListener {
-            playerState = STATE_PREPARED
-            onPlayerStateChanged(playerState)
+     //       playerState = PlayerScreenState.PREPARED
+      //      onPlayerStateChanged(playerState)
         }
         mediaPlayer.setOnCompletionListener {
-            playerState = STATE_COMPLETED
-            onPlayerStateChanged(playerState)
+   //         playerState = PlayerScreenState.COMPLETED
+   //         onPlayerStateChanged(playerState)
         }
     }
 
-    override var onPlayerStateChanged: (state: Int) -> Unit
-        get() = localOnPlayerStateChanged
-        set(value) {
-            localOnPlayerStateChanged = value
-        }
+//    override var onPlayerStateChanged: (state: PlayerScreenState) -> Unit
+//        get() = localOnPlayerStateChanged
+//        set(value) {
+//            localOnPlayerStateChanged = value
+//        }
 
     override var onPlayerCompletion: () -> Unit
         get() = localOnPlayerCompletion
@@ -51,39 +54,44 @@ class PlayerRepositoryImpl(
 
     override fun startPlayer() {
         mediaPlayer.start()
-        playerState = STATE_PLAYING
-        onPlayerStateChanged(playerState)
+ //       playerState = PlayerScreenState.PLAYING
+//        onPlayerStateChanged(playerState)
     }
 
     override fun pausePlayer() {
         mediaPlayer.pause()
-        playerState = STATE_PAUSED
-        onPlayerStateChanged(playerState)
+    //    playerState = PlayerScreenState.PAUSED
+    //    onPlayerStateChanged(playerState)
 
     }
 
-    override fun playbackControl() {
-        when (playerState) {
-            STATE_PLAYING -> {
-                pausePlayer()
-            }
-
-            STATE_PREPARED, STATE_PAUSED -> {
-                startPlayer()
-            }
-        }
+    override fun isPlaying(): Boolean {
+        return mediaPlayer.isPlaying
     }
+
+//    override fun playbackControl() {  //убрать
+//        when (playerState) {
+//            PlayerScreenState.PLAYING -> {
+//                pausePlayer()
+//            }
+//
+//            PlayerScreenState.PREPARED, PlayerScreenState.PAUSED -> {
+//                startPlayer()
+//            }
+//
+//            else -> {}
+//        }
+//    }
 
     override fun releasePlayer() {
         mediaPlayer.release()
     }
 
-    companion object {
-        const val STATE_DEFAULT = 0
-        const val STATE_PREPARED = 1
-        const val STATE_PLAYING = 2
-        const val STATE_PAUSED = 3
-        const val STATE_COMPLETED = 4
-        const val MISTAKE = "Mistake"
-    }
+//    companion object {
+//        const val STATE_DEFAULT = 0
+//        const val STATE_PREPARED = 1
+//        const val STATE_PLAYING = 2
+//        const val STATE_PAUSED = 3
+//        const val STATE_COMPLETED = 4
+//    }
 }

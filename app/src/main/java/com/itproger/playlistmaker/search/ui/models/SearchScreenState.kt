@@ -6,7 +6,7 @@ sealed interface SearchScreenState {
     object Loading : SearchScreenState
 
     data class Content(
-        val tracks: MutableList<Track>  // или MutableList<Track> ?
+        val tracks: MutableList<Track>
     ) : SearchScreenState
 
     data class Error(
@@ -15,9 +15,5 @@ sealed interface SearchScreenState {
 
     data class Empty(
         val message: String
-    ) : SearchScreenState
-
-    data class History(
-        val historyTracks: MutableList<Track>  // или MutableList<Track> ?
     ) : SearchScreenState
 }
