@@ -3,8 +3,8 @@ package com.itproger.playlistmaker.search.ui.adapters
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.itproger.playlistmaker.R
 import com.itproger.playlistmaker.search.domain.models.Track
+import com.itproger.playlistmaker.databinding.TrackViewBinding
 
 class TrackAdapter(
 
@@ -14,8 +14,8 @@ class TrackAdapter(
     var trackList: MutableList<Track> = mutableListOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrackViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.track_view, parent, false)
-        return TrackViewHolder(view)
+        val binding = TrackViewBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return TrackViewHolder(binding)
     }
 
     override fun getItemCount(): Int = trackList.size
