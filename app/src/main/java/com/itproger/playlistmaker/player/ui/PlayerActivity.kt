@@ -14,8 +14,6 @@ import com.itproger.playlistmaker.databinding.ActivityPlayerBinding
 import com.itproger.playlistmaker.player.ui.models.PlayerStateInterface
 import com.itproger.playlistmaker.player.ui.view_model.PlayerViewModel
 import com.itproger.playlistmaker.search.domain.models.Track
-import java.text.SimpleDateFormat
-import java.util.Locale
 
 class PlayerActivity : AppCompatActivity() {
 
@@ -64,13 +62,12 @@ class PlayerActivity : AppCompatActivity() {
 
     private fun setTrackData(track: Track) {
         val cornerRadius = 8f
-        val dateFormat by lazy { SimpleDateFormat("mm:ss", Locale.getDefault()) }
         val releaseYear = track.releaseDate.substring(0, 4)
 
         with(binding) {
             trackName.text = track.trackName
             artistName.text = track.artistName
-            trackDuration.text = dateFormat.format(track.trackTimeMillis)
+            trackDuration.text = track.trackTime
             playTime.text = String.format("%02d:%02d", 0, 0)
             playButton.setImageResource(R.drawable.play)
         }

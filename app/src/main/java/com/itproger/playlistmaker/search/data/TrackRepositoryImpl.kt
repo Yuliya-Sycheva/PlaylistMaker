@@ -10,6 +10,7 @@ import com.itproger.playlistmaker.search.domain.models.Track
 import com.itproger.playlistmaker.search.data.preferences.SharedPreferencesSearchClientImpl
 import com.itproger.playlistmaker.utils.GeneralConstants
 import com.itproger.playlistmaker.utils.Resource
+import com.itproger.playlistmaker.utils.TrackTimeConverter
 
 class TrackRepositoryImpl(
     private val networkClient: NetworkClient,
@@ -30,7 +31,7 @@ class TrackRepositoryImpl(
                         it.trackId,
                         it.trackName,
                         it.artistName,
-                        it.trackTimeMillis,
+                        TrackTimeConverter.milsToMinSec(it.trackTimeMillis),
                         it.artworkUrl100,
                         it.collectionName,
                         it.releaseDate,
