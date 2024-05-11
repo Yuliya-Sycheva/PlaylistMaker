@@ -7,8 +7,8 @@ import com.itproger.playlistmaker.search.data.dto.TrackRequest
 import com.itproger.playlistmaker.search.data.dto.TrackResponse
 import com.itproger.playlistmaker.search.domain.api.TrackRepository
 import com.itproger.playlistmaker.search.domain.models.Track
-import com.itproger.playlistmaker.search.data.preferences.SharedPreferencesSearchClient
 import com.itproger.playlistmaker.search.data.preferences.SharedPreferencesSearchClientImpl
+import com.itproger.playlistmaker.utils.GeneralConstants
 import com.itproger.playlistmaker.utils.Resource
 
 class TrackRepositoryImpl(
@@ -16,24 +16,21 @@ class TrackRepositoryImpl(
     private val sharedPreferencesSearchClient: SharedPreferencesSearchClientImpl
 ) : TrackRepository {
 
-    // private val dateFormat by lazy{ SimpleDateFormat("mm:ss", Locale.getDefault()) }  /////????????
-
     override fun searchTracks(text: String): Resource<List<Track>> {
         val response = networkClient.doRequest(TrackRequest(text))
         return when (response.resultCode) {
-            -1 -> {
+            GeneralConstants.NO_INTERNET -> {
                 Log.d("TEST", "-1")
-                Resource.Error("Проверьте подключение к интернету") // исправить!!!!!
+                Resource.Error(GeneralConstants.CHECK_INTERNET)
             }
 
-            200 -> {
+            GeneralConstants.SUCCESS_INTERNET -> {
                 Resource.Success((response as TrackResponse).results.map {
                     Track(
                         it.trackId,
                         it.trackName,
                         it.artistName,
-                        it.trackTimeMillis,  /////////////
-                        //  dateFormat.format(it.trackTimeMillis),   /////????????
+                        it.trackTimeMillis,
                         it.artworkUrl100,
                         it.collectionName,
                         it.releaseDate,
@@ -45,8 +42,8 @@ class TrackRepositoryImpl(
             }
 
             else -> {
-                Log.d("TEST", "Ошибка сервера")
-                Resource.Error("Ошибка сервера")  // исправить!!!!!
+                Log.d("TEST", GeneralConstants.SERVER_ERROR)
+                Resource.Error(GeneralConstants.SERVER_ERROR)
             }
         }
     }
@@ -56,7 +53,7 @@ class TrackRepositoryImpl(
     }
 
     override fun readTracksFromHistory(): Array<Track> {
-       return sharedPreferencesSearchClient.readTracksFromHistory()
+        return sharedPreferencesSearchClient.readTracksFromHistory()
     }
 
     override fun clearHistory() {

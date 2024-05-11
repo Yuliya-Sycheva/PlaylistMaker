@@ -1,4 +1,5 @@
 package com.itproger.playlistmaker.search.ui.adapters
+
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -6,8 +7,8 @@ import com.itproger.playlistmaker.R
 import com.itproger.playlistmaker.search.domain.models.Track
 
 class TrackAdapter(
-  //  var trackList: MutableList<Track>,  // убрала private val для презентера, не уверена
-    private val onClickListener: (clickedTrack : Track) -> Unit
+
+    private val onClickListener: (clickedTrack: Track) -> Unit
 ) : RecyclerView.Adapter<TrackViewHolder>() {
 
     var trackList: MutableList<Track> = mutableListOf()
@@ -22,18 +23,15 @@ class TrackAdapter(
     override fun onBindViewHolder(holder: TrackViewHolder, position: Int) {
         val currentTrack = trackList[position]
         holder.bind(currentTrack)
-        holder.itemView.setOnClickListener{
-           // Toast.makeText(holder.itemView.context, "Нажали на трек!", Toast.LENGTH_SHORT).show()
+        holder.itemView.setOnClickListener {
+            // Toast.makeText(holder.itemView.context, "Нажали на трек!", Toast.LENGTH_SHORT).show()
             onClickListener(currentTrack)
 
         }
     }
+
     fun setData(newTracks: List<Track>) {
         trackList.clear()
         trackList.addAll(newTracks)
-    }
-
-    fun interface TrackClickListener {
-        fun onTrackClick(track: Track)
     }
 }

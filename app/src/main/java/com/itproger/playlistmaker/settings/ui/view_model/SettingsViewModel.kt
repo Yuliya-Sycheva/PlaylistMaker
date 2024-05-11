@@ -18,13 +18,12 @@ class SettingsViewModel(
     private val sharingInteractor: SharingInteractor,
     private val settingsInteractor: SettingsInteractor,
 
-) : ViewModel() {
+    ) : ViewModel() {
 
     private var themeLiveData = MutableLiveData(true)
 
     init {
         themeLiveData.value = settingsInteractor.getThemeSettings().darkTheme
-     //   applyTheme(themeLiveData.value ?: false)
     }
 
     fun getThemeLiveData(): LiveData<Boolean> = themeLiveData
@@ -36,7 +35,7 @@ class SettingsViewModel(
             viewModelFactory {
                 initializer {
                     val application =
-                        this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as Application //////////
+                        this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as Application // =?
                     SettingsViewModel(
                         SharingCreator.provideSharingInteractor(application),
                         SettingsCreator.providesettingsInteractor(application)
@@ -59,11 +58,10 @@ class SettingsViewModel(
 
     fun clickSwitchTheme(isChecked: Boolean) {
         Log.d("TEST", "clickSwitchTheme")
-        themeLiveData.value = isChecked                        //
+        themeLiveData.value = isChecked
         settingsInteractor.updateThemeSetting(isChecked)
-              applyTheme(isChecked)
+        applyTheme(isChecked)
     }
-
 
     private fun applyTheme(darkThemeEnabled: Boolean) {
         Log.d("TEST", "applyTheme")
@@ -76,21 +74,3 @@ class SettingsViewModel(
         )
     }
 }
-
-
-
-//    companion object {
-//        fun getViewModelFactory(
-//            sharingInteractor: SharingInteractor,
-//            settingsInteractor: SettingsInteractor
-//        ): ViewModelProvider.Factory =
-//            object : ViewModelProvider.Factory {
-//                @Suppress("UNCHECKED_CAST")
-//                override fun <T : ViewModel> create(modelClass: Class<T>): T {
-//                    return SettingsViewModel(
-//                        SharingCreator.provideSharingInteractor(),
-//                        SettingsCreator.providesettingsInteractor()
-//                    ) as T
-//                }
-//            }
-//    }

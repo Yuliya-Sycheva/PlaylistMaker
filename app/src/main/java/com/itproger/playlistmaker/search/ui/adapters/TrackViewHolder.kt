@@ -19,7 +19,7 @@ class TrackViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     private val artworkUrlView: ImageView = itemView.findViewById(R.id.trackIcon)
 
     private val cornerRadius = 2f
-    private val dateFormat by lazy{SimpleDateFormat("mm:ss", Locale.getDefault())}
+    private val dateFormat by lazy { SimpleDateFormat("mm:ss", Locale.getDefault()) }
 
     fun bind(model: Track) {
         trackNameView.text = model.trackName

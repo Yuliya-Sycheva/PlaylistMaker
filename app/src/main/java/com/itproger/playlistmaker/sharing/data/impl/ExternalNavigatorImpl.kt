@@ -10,7 +10,7 @@ import com.itproger.playlistmaker.sharing.domain.model.EmailData
 
 class ExternalNavigatorImpl(private val context: Context) : ExternalNavigator {
 
-    private val emailData = EmailData() ///////////add
+    private val emailData = EmailData()
 
     override fun shareLink() {
         context.startActivity(

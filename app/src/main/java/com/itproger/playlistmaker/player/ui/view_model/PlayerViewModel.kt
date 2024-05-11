@@ -10,13 +10,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
-import com.itproger.playlistmaker.R
 import com.itproger.playlistmaker.player.creator.PlayerCreator
-import com.itproger.playlistmaker.player.domain.models.PlayerScreenState
-import com.itproger.playlistmaker.player.ui.PlayerActivity
 import com.itproger.playlistmaker.player.ui.models.PlayerStateInterface
 import com.itproger.playlistmaker.search.domain.models.Track
-import com.itproger.playlistmaker.search.ui.models.SearchScreenState
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -46,34 +42,6 @@ class PlayerViewModel(
     private val stateLiveData = MutableLiveData<PlayerStateInterface>()
     fun observeState(): LiveData<PlayerStateInterface> = stateLiveData
 
-//    init { // тут могут быть ошибки по тому, как разнесла
-//        playerInteractor.onPlayerStateChanged = { state ->
-//            when (state) {
-//                PlayerScreenState.PLAYING -> {
-//                    startTimer()   // тут особенно
-//                    renderState(PlayerStateInterface.Play)
-//                  //  binding.playButton.setImageResource(R.drawable.pause)
-//                }
-//
-//                PlayerScreenState.PREPARED, PlayerScreenState.PAUSED, PlayerScreenState.COMPLETED -> {
-//                    renderState(PlayerStateInterface.Prepare)
-//                 //   binding.playButton.setImageResource(R.drawable.play)
-//                }
-//
-//                else -> {}
-//            }
-//        }
-//    }
-
-//    init {
-//        playerInteractor.onPlayerCompletion = {
-//            renderState(PlayerStateInterface.Prepare)
-//            Log.d(MISTAKE, "Completed")
-//            mainThreadHandler?.removeCallbacksAndMessages(null)  //gpt =?
-//        }
-//    }
-
-
     private fun startTimer() {
         mainThreadHandler?.postDelayed(
             object : Runnable {
@@ -85,10 +53,7 @@ class PlayerViewModel(
                         } else {
                             (playerInteractor.playerDuration.toLong())
                         }
-//                    renderState(
-//                        PlayerStateInterface.UpdatePlayingTime(
-//                            time =
-                    //                     if (mediaPlayer.currentPosition < maxTrackDuration) {
+
                     if (playerInteractor.playerCurrentPosition < maxTrackDuration) {
                         renderState(
                             PlayerStateInterface.UpdatePlayingTime(
@@ -100,10 +65,7 @@ class PlayerViewModel(
                         )
                     } else {
                         renderState((PlayerStateInterface.Prepare))
-                        //  String.format("%02d:%02d", 0, 0)
                     }
-                    //   )
-                    //   )
                     // И снова планируем то же действие через пол секунды
                     mainThreadHandler?.postDelayed(
                         this,
@@ -134,18 +96,12 @@ class PlayerViewModel(
                 Log.d(MISTAKE, "onPlayerCompletion")
             }
         )
-//        playerInteractor.onPlayerCompletion  = {
-//            Log.d(MISTAKE, "Completed")
-//            renderState(PlayerStateInterface.Prepare)
-//            mainThreadHandler?.removeCallbacksAndMessages(null)
-//        }
-
     }
 
     fun startPlayer() {
         renderState(PlayerStateInterface.Play)
         playerInteractor.startPlayer()
-        startTimer() //??????????????????????????????????????????????????????
+        startTimer()
         Log.d(MISTAKE, "Start")
     }
 

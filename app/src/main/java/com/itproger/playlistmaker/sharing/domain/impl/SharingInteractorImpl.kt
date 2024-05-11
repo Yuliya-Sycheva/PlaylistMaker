@@ -4,8 +4,11 @@ import com.itproger.playlistmaker.sharing.domain.ExternalNavigator
 import com.itproger.playlistmaker.sharing.domain.SharingInteractor
 
 class SharingInteractorImpl(
+
     private val externalNavigator: ExternalNavigator,
-) : SharingInteractor {
+
+    ) : SharingInteractor {
+
     override fun shareApp() {
         externalNavigator.shareLink()
     }

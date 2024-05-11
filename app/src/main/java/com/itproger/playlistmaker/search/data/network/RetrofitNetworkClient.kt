@@ -38,16 +38,6 @@ class RetrofitNetworkClient(private val context: Context) : NetworkClient {
             body.apply { resultCode = response.code() }
         } else {
             Response().apply { resultCode = response.code() }
-
-//        if (dto is TrackRequest) {
-//            val resp = iTunesService.search(dto.text).execute()
-//
-//            val body = resp.body() ?: Response()
-//
-//            return body.apply { resultCode = resp.code() }
-//        } else {
-//            return Response().apply { resultCode = 400 }
-//        }
         }
     }
 

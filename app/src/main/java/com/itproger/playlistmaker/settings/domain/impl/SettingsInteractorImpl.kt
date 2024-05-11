@@ -8,10 +8,10 @@ class SettingsInteractorImpl(
     private val settingsRepository: SettingsRepository
 ) : SettingsInteractor {
     override fun getThemeSettings(): ThemeSettings {
-       return settingsRepository.getThemeSettings()
+        return settingsRepository.getThemeSettings()
     }
 
     override fun updateThemeSetting(isChecked: Boolean) {
-        return settingsRepository.updateThemeSetting(ThemeSettings(isChecked)) ///change
+        return settingsRepository.updateThemeSetting(ThemeSettings(isChecked))
     }
 }

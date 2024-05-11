@@ -7,8 +7,9 @@ import com.itproger.playlistmaker.databinding.ActivitySettingsBinding
 import com.itproger.playlistmaker.settings.ui.view_model.SettingsViewModel
 
 class SettingsActivity : AppCompatActivity() {
+
     private lateinit var binding: ActivitySettingsBinding
-    private lateinit var viewModelSettings: SettingsViewModel //1
+    private lateinit var viewModelSettings: SettingsViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -18,11 +19,10 @@ class SettingsActivity : AppCompatActivity() {
         viewModelSettings = ViewModelProvider(
             this,
             SettingsViewModel.getViewModelFactory()
-        )[SettingsViewModel::class.java]  //2
+        )[SettingsViewModel::class.java]
 
         //Текущая тема:
         viewModelSettings.getThemeLiveData().observe(this) { isChecked ->
-            // (applicationContext as App).darkTheme /////////////////////
             binding.themeSwitcher.isChecked = isChecked
         }
 
@@ -42,14 +42,8 @@ class SettingsActivity : AppCompatActivity() {
             viewModelSettings.clickShareApp()
         }
 
-        //      binding.themeSwitcher.isChecked = (applicationContext as App).darkTheme    /////////////////убрать?? присваиваю значение темы из App
-
         binding.themeSwitcher.setOnCheckedChangeListener { switcher, isChecked ->
             viewModelSettings.clickSwitchTheme(isChecked)
         }
-
-//        binding.themeSwitcher.setOnCheckedChangeListener { switcher, isChecked ->
-//            (applicationContext as App).switchTheme(isChecked)
-//        }
     }
 }
