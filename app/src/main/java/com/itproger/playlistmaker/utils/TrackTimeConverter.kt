@@ -7,4 +7,8 @@ object TrackTimeConverter {
     fun milsToMinSec(milliseconds: Long): String {
         return SimpleDateFormat("mm:ss", Locale.getDefault()).format(milliseconds)
     }
+
+    fun setTrackYear(year: String) : String {
+        return year.substring(0, 4)
+    }
 }

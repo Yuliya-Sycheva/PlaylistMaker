@@ -11,7 +11,7 @@ interface TrackInteractor {
 
     fun saveTrackToHistory(track: List<Track>)
 
-    fun readTracksFromHistory(): Array<Track>   //не забыть заменить на List
+    fun readTracksFromHistory(): List<Track>
 
     fun clearHistory()
 }

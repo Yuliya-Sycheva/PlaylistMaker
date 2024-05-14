@@ -4,6 +4,6 @@ import com.itproger.playlistmaker.search.domain.models.Track
 
 interface SharedPreferencesSearchClient {
     fun saveTrackToHistory(track: List<Track>)
-    fun readTracksFromHistory(): Array<Track> //не забыть заменить на List
+    fun readTracksFromHistory(): List<Track>
     fun clearHistory()
 }

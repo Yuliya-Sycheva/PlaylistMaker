@@ -1,6 +1,6 @@
 package com.itproger.playlistmaker.settings.domain.impl
 
-import com.itproger.playlistmaker.settings.data.SettingsRepository
+import com.itproger.playlistmaker.settings.domain.SettingsRepository
 import com.itproger.playlistmaker.settings.domain.SettingsInteractor
 import com.itproger.playlistmaker.settings.domain.model.ThemeSettings
 

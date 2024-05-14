@@ -1,7 +1,7 @@
 package com.itproger.playlistmaker.settings.data.impl
 
 import android.content.SharedPreferences
-import com.itproger.playlistmaker.settings.data.SettingsRepository
+import com.itproger.playlistmaker.settings.domain.SettingsRepository
 import com.itproger.playlistmaker.settings.domain.model.ThemeSettings
 
 const val NIGHT_THEME_KEY = "night_theme"

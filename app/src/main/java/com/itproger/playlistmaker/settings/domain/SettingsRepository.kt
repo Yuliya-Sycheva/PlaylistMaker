@@ -1,4 +1,4 @@
-package com.itproger.playlistmaker.settings.data
+package com.itproger.playlistmaker.settings.domain
 
 import com.itproger.playlistmaker.settings.domain.model.ThemeSettings
 

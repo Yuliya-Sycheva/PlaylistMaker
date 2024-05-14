@@ -34,7 +34,7 @@ class TrackRepositoryImpl(
                         TrackTimeConverter.milsToMinSec(it.trackTimeMillis),
                         it.artworkUrl100,
                         it.collectionName,
-                        it.releaseDate,
+                        TrackTimeConverter.setTrackYear(it.releaseDate),
                         it.primaryGenreName,
                         it.country,
                         it.previewUrl
@@ -53,7 +53,7 @@ class TrackRepositoryImpl(
         sharedPreferencesSearchClient.saveTrackToHistory(track)
     }
 
-    override fun readTracksFromHistory(): Array<Track> {
+    override fun readTracksFromHistory(): List<Track> {
         return sharedPreferencesSearchClient.readTracksFromHistory()
     }
 

@@ -1,8 +1,12 @@
 package com.itproger.playlistmaker.main.ui
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.itproger.playlistmaker.databinding.ActivityMainBinding
+import com.itproger.playlistmaker.library.ui.LibraryActivity
+import com.itproger.playlistmaker.search.ui.SearchActivity
+import com.itproger.playlistmaker.settings.ui.activity.SettingsActivity
 
 class MainActivity : AppCompatActivity() {
 
@@ -13,15 +17,18 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.search.setOnClickListener {
-            NavigatorToActivity.navigateToSearchActivity(this)
+            val searchIntent = Intent(this, SearchActivity::class.java)
+            startActivity(searchIntent)
         }
 
         binding.library.setOnClickListener {
-            NavigatorToActivity.navigateToLibraryActivity(this)
+            val libraryIntent = Intent(this, LibraryActivity::class.java)
+            startActivity(libraryIntent)
         }
 
         binding.settings.setOnClickListener {
-            NavigatorToActivity.navigateToSettingsActivity(this)
+            val settingsIntent = Intent(this, SettingsActivity::class.java)
+            startActivity(settingsIntent)
         }
 
     }

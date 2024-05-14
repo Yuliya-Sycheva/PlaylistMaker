@@ -128,4 +128,8 @@ class PlayerViewModel(
             startPlayer()
         }
     }
+
+    fun setStartTime() : String {
+        return String.format("%02d:%02d", 0, 0)
+    }
 }

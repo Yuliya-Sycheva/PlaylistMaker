@@ -1,4 +1,4 @@
-package com.itproger.playlistmaker.search.view_model
+package com.itproger.playlistmaker.search.ui.view_model
 
 import android.app.Application
 import android.os.Handler
@@ -127,11 +127,16 @@ class TracksSearchViewModel(
         trackInteractor.saveTrackToHistory(track)
     }
 
-    fun readTracksFromHistory(): Array<Track> {  //не забыть заменить на List
+    fun readTracksFromHistory(): List<Track> {
         return trackInteractor.readTracksFromHistory()
     }
 
     fun clearHistory() {
         trackInteractor.clearHistory()
+    }
+
+    fun onClearIconClick() {
+        val historyTracks = readTracksFromHistory()
+        renderState(SearchScreenState.History(historyTracks as MutableList<Track>))
     }
 }

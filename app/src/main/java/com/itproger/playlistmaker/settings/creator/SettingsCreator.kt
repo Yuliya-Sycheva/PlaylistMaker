@@ -2,7 +2,7 @@ package com.itproger.playlistmaker.settings.creator
 
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
-import com.itproger.playlistmaker.settings.data.SettingsRepository
+import com.itproger.playlistmaker.settings.domain.SettingsRepository
 import com.itproger.playlistmaker.settings.data.impl.SettingsRepositoryImpl
 import com.itproger.playlistmaker.settings.domain.SettingsInteractor
 import com.itproger.playlistmaker.settings.domain.impl.SettingsInteractorImpl

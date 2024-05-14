@@ -3,6 +3,7 @@ package com.itproger.playlistmaker.search.data.preferences
 import android.content.SharedPreferences
 import android.util.Log
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.itproger.playlistmaker.search.domain.models.Track
 
 const val HISTORY_TRACKS_LIST_KEY = "history_tracks_list"
@@ -31,10 +32,10 @@ class SharedPreferencesSearchClientImpl(private val sharedPreferences: SharedPre
             .apply()
     }
 
-    override fun readTracksFromHistory(): Array<Track> {  //не забыть заменить на List
-        val json = sharedPreferences.getString(HISTORY_TRACKS_LIST_KEY, null) ?: return emptyArray()
+    override fun readTracksFromHistory(): List<Track> {
+        val json = sharedPreferences.getString(HISTORY_TRACKS_LIST_KEY, null) ?: return emptyList()
         Log.d("Test", "Читаю трек")
-        return Gson().fromJson(json, Array<Track>::class.java)
+        return Gson().fromJson(json, object : TypeToken<List<Track>>() {}.type)
     }
 
     override fun clearHistory() {

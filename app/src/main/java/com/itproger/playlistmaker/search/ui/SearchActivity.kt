@@ -10,6 +10,7 @@ import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.itproger.playlistmaker.R
@@ -17,7 +18,7 @@ import com.itproger.playlistmaker.search.ui.adapters.TrackAdapter
 import com.itproger.playlistmaker.databinding.ActivitySearchBinding
 import com.itproger.playlistmaker.player.ui.PlayerActivity
 import com.itproger.playlistmaker.search.domain.models.Track
-import com.itproger.playlistmaker.search.view_model.TracksSearchViewModel
+import com.itproger.playlistmaker.search.ui.view_model.TracksSearchViewModel
 import com.itproger.playlistmaker.search.ui.models.SearchScreenState
 
 class SearchActivity : AppCompatActivity() {
@@ -63,7 +64,7 @@ class SearchActivity : AppCompatActivity() {
             render(it)
         }
 
-        binding.historyLayout.visibility = View.GONE
+        binding.historyLayout.isVisible = false
 
         searchAdapter = TrackAdapter(currentTrackClickListener)
         historyAdapter = TrackAdapter(historyTrackClickListener)
@@ -89,10 +90,10 @@ class SearchActivity : AppCompatActivity() {
             if (hasFocus && binding.query.text.isEmpty()) {
                 val historyTracks = viewModel.readTracksFromHistory().toMutableList()
                 historyAdapter.setData(historyTracks)
-                binding.historyLayout.visibility =
-                    if (historyTracks.isNotEmpty()) View.VISIBLE else View.GONE
+                binding.historyLayout.isVisible =
+                    historyTracks.isNotEmpty()
             } else {
-                binding.historyLayout.visibility = View.GONE
+                binding.historyLayout.isVisible = false
             }
         }
 
@@ -100,7 +101,9 @@ class SearchActivity : AppCompatActivity() {
         binding.clearIcon.setOnClickListener {
             binding.query.setText("")
             binding.query.clearFocus()
-            searchAdapter.trackList = arrayListOf()
+            searchAdapter.trackList = mutableListOf()
+            viewModel.onClearIconClick()
+            historyAdapter.notifyDataSetChanged()
             hidePlaceholdersAndUpdateBtn()
             val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
             imm.hideSoftInputFromWindow(binding.query.windowToken, 0)
@@ -111,9 +114,8 @@ class SearchActivity : AppCompatActivity() {
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                binding.clearIcon.visibility = clearButtonVisibility(s)
-                binding.historyLayout.visibility =
-                    if (binding.query.hasFocus() && s?.isEmpty() == true) View.VISIBLE else View.GONE
+                binding.clearIcon.isVisible = clearButtonVisibility(s)
+                binding.historyLayout.isVisible = binding.query.hasFocus() && s?.isEmpty() == true
                 viewModel.searchDebounce(
                     changedText = s?.toString() ?: ""
                 )
@@ -142,7 +144,7 @@ class SearchActivity : AppCompatActivity() {
             val historyTracks = viewModel.readTracksFromHistory().toMutableList()
             historyTracks.clear()
             viewModel.clearHistory()
-            binding.historyLayout.visibility = View.GONE
+            binding.historyLayout.isVisible = false
             historyAdapter.notifyDataSetChanged()
         }
     } // конец onCreate()
@@ -157,12 +159,8 @@ class SearchActivity : AppCompatActivity() {
     }
 
     //кнопка "Крестик"
-    private fun clearButtonVisibility(s: CharSequence?): Int {
-        return if (s.isNullOrEmpty()) {
-            View.GONE
-        } else {
-            View.VISIBLE
-        }
+    private fun clearButtonVisibility(s: CharSequence?): Boolean {
+        return !s.isNullOrEmpty()
     }
 
     override fun onDestroy() {
@@ -189,27 +187,28 @@ class SearchActivity : AppCompatActivity() {
 
             is SearchScreenState.Error -> showError(state.errorMessage)
             is SearchScreenState.Empty -> showEmpty(state.message)
+            is SearchScreenState.History -> showHistory()
             else -> {}
         }
     }
 
     private fun showLoading() {
         with(binding) {
-            progressBar.visibility = View.VISIBLE
-            historyLayout.visibility = View.GONE
-            updateButton.visibility = View.GONE
-            placeholderImage.visibility = View.GONE
-            placeholderMessage.visibility = View.GONE
+            progressBar.isVisible = true
+            historyLayout.isVisible = false
+            updateButton.isVisible = false
+            placeholderImage.isVisible = false
+            placeholderMessage.isVisible = false
         }
     }
 
     private fun showError(errorMessage: String) {
         with(binding) {
-            progressBar.visibility = View.GONE
-            historyLayout.visibility = View.GONE
-            updateButton.visibility = View.VISIBLE
-            placeholderImage.visibility = View.VISIBLE
-            placeholderMessage.visibility = View.VISIBLE
+            progressBar.isVisible = false
+            historyLayout.isVisible = false
+            updateButton.isVisible = true
+            placeholderImage.isVisible = true
+            placeholderMessage.isVisible = true
 
             placeholderImage.setImageResource(R.drawable.something_went_wrong)
             placeholderMessage.text = errorMessage
@@ -218,11 +217,11 @@ class SearchActivity : AppCompatActivity() {
 
     private fun showEmpty(emptyMessage: String) {
         with(binding) {
-            progressBar.visibility = View.GONE
-            historyLayout.visibility = View.GONE
-            updateButton.visibility = View.GONE
-            placeholderImage.visibility = View.VISIBLE
-            placeholderMessage.visibility = View.VISIBLE
+            progressBar.isVisible = false
+            historyLayout.isVisible = false
+            updateButton.isVisible = false
+            placeholderImage.isVisible = true
+            placeholderMessage.isVisible = true
 
             placeholderImage.setImageResource(R.drawable.nothing_found)
             placeholderMessage.text = emptyMessage
@@ -233,28 +232,36 @@ class SearchActivity : AppCompatActivity() {
         with(binding) {
             tracksSearchList.adapter?.notifyDataSetChanged()
 
-            progressBar.visibility = View.GONE
-            historyLayout.visibility = View.GONE
-            updateButton.visibility = View.GONE
-            placeholderImage.visibility = View.GONE
-            placeholderMessage.visibility = View.GONE
+            progressBar.isVisible = false
+            historyLayout.isVisible = false
+            updateButton.isVisible = false
+            placeholderImage.isVisible = false
+            placeholderMessage.isVisible = false
         }
         hideHistory()
     }
 
     private fun hideHistory() {
         with(binding) {
-            tracksHistoryList.visibility = View.GONE
-            youWereLookingFor.visibility = View.GONE
-            cleanHistory.visibility = View.GONE
+            tracksHistoryList.isVisible = false
+            youWereLookingFor.isVisible = false
+            cleanHistory.isVisible = false
         }
     }
 
     private fun hidePlaceholdersAndUpdateBtn() {
         with(binding) {
-            placeholderMessage.visibility = View.GONE
-            placeholderImage.visibility = View.GONE
-            updateButton.visibility = View.GONE
+            placeholderMessage.isVisible = false
+            placeholderImage.isVisible = false
+            updateButton.isVisible = false
+        }
+    }
+
+    private fun showHistory() {
+        with(binding) {
+            tracksHistoryList.isVisible = true
+            youWereLookingFor.isVisible = true
+            cleanHistory.isVisible = true
         }
     }
 }

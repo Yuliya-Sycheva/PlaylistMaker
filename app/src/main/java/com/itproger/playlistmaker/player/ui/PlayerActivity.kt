@@ -2,9 +2,9 @@ package com.itproger.playlistmaker.player.ui
 
 import android.os.Build
 import android.os.Bundle
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
@@ -62,13 +62,12 @@ class PlayerActivity : AppCompatActivity() {
 
     private fun setTrackData(track: Track) {
         val cornerRadius = 8f
-        val releaseYear = track.releaseDate.substring(0, 4)
 
         with(binding) {
             trackName.text = track.trackName
             artistName.text = track.artistName
             trackDuration.text = track.trackTime
-            playTime.text = String.format("%02d:%02d", 0, 0)
+            playTime.text = viewModel.setStartTime()
             playButton.setImageResource(R.drawable.play)
         }
         binding.playButton.setBackgroundColor(  //добавила для прозрачного фона за кнопками
@@ -79,12 +78,12 @@ class PlayerActivity : AppCompatActivity() {
         )
 
         if (track.collectionName.isNullOrEmpty()) {
-            binding.trackAlbum.visibility = View.GONE
-            binding.album.visibility = View.GONE
+            binding.trackAlbum.isVisible = false
+            binding.album.isVisible = false
         } else {
             binding.trackAlbum.text = track.collectionName
         }
-        binding.releaseDate.text = releaseYear
+        binding.releaseDate.text = track.releaseDate
         binding.trackGenre.text = track.primaryGenreName
         binding.trackCountry.text = track.country
 
@@ -117,10 +116,9 @@ class PlayerActivity : AppCompatActivity() {
         }
     }
 
-
     private fun prepare() {
         binding.playButton.setImageResource(R.drawable.play)
-        binding.playTime.text = String.format("%02d:%02d", 0, 0)
+        binding.playTime.text = viewModel.setStartTime()
     }
 
     private fun play() {

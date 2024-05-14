@@ -16,4 +16,8 @@ sealed interface SearchScreenState {
     data class Empty(
         val message: String
     ) : SearchScreenState
+
+    data class History(
+        val tracks: MutableList<Track>
+    ) : SearchScreenState
 }

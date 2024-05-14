@@ -28,7 +28,7 @@ class TrackInteractorImpl(private val repository: TrackRepository) : TrackIntera
         repository.saveTrackToHistory(track)
     }
 
-    override fun readTracksFromHistory(): Array<Track> {
+    override fun readTracksFromHistory(): List<Track> {
         return repository.readTracksFromHistory()
     }
 

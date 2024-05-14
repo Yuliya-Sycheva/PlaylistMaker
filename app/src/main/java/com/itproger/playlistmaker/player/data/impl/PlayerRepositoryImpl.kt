@@ -2,9 +2,7 @@ package com.itproger.playlistmaker.player.data.impl
 
 import android.media.MediaPlayer
 import android.util.Log
-import com.itproger.playlistmaker.player.domain.models.PlayerScreenState
 import com.itproger.playlistmaker.player.domain.repository.PlayerRepository
-import com.itproger.playlistmaker.player.ui.view_model.PlayerViewModel
 import com.itproger.playlistmaker.search.domain.models.Track
 
 
