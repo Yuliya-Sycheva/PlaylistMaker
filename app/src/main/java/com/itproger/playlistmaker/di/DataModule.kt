@@ -1,6 +1,7 @@
 package com.itproger.playlistmaker.di
 
 import android.content.Context
+import android.util.Log
 import com.google.gson.Gson
 import com.itproger.playlistmaker.search.NetworkClient
 import com.itproger.playlistmaker.search.data.network.ITunesApi
@@ -16,6 +17,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 val dataModule = module {
 
     single<ITunesApi> {
+        Log.d("TEST", "ITunesApi_Module")
         Retrofit.Builder()
             .baseUrl(GeneralConstants.iTunesBaseUrl)
             .addConverterFactory(GsonConverterFactory.create())
@@ -29,17 +31,21 @@ val dataModule = module {
             // AppCompatActivity.MODE_PRIVATE
             Context.MODE_PRIVATE
         )
+        Log.d("TEST", "getSharedPreferences_Module")
     }
 
     factory {
+        Log.d("TEST", " Gson_Module")
         Gson()
     }
 
     single<SearchHistoryStorage> {
+        Log.d("TEST", "SharedPreferencesSearchHistoryStorage_Module")
         SharedPreferencesSearchHistoryStorage(sharedPreferences = get(), gson = get())  //
     }
 
     single<NetworkClient> {      //single?
+        Log.d("TEST", "RetrofitNetworkClient_Module")
         RetrofitNetworkClient(api = get(), context = androidContext())
     }
 }

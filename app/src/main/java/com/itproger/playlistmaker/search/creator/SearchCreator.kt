@@ -14,7 +14,7 @@ object SearchCreator {
 //    private fun getTrackRepository(context: Context): TrackRepository {
 //        return TrackRepositoryImpl(
 //            RetrofitNetworkClient(context), SharedPreferencesSearchHistoryStorage(
-//                context.getSharedPreferences(                        ///TODO
+//                context.getSharedPreferences(
 //                    GeneralConstants.SEARCH_HISTORY_PREFERENCES,
 //                    AppCompatActivity.MODE_PRIVATE
 //                )

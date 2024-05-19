@@ -7,12 +7,10 @@ import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
-import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.itproger.playlistmaker.R
 import com.itproger.playlistmaker.search.ui.adapters.TrackAdapter
@@ -33,7 +31,6 @@ class SearchActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySearchBinding
 
-   // private lateinit var viewModel: TracksSearchViewModel
    private val viewModel by viewModel<TracksSearchViewModel>()
 
     private val handler = Handler(Looper.getMainLooper())
@@ -59,13 +56,9 @@ class SearchActivity : AppCompatActivity() {
         binding = ActivitySearchBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-//        viewModel = ViewModelProvider(
-//            this,
-//            TracksSearchViewModel.getViewModelFactory()
-//        )[TracksSearchViewModel::class.java]
-//
-        Log.d("TEST", "viewModel")
+        Log.d("TEST", "onCreate_start")
         viewModel.observeState().observe(this@SearchActivity) {
+            Log.d("TEST", "render")
             render(it)
         }
 

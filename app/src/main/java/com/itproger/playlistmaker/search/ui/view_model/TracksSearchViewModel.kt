@@ -1,20 +1,12 @@
 package com.itproger.playlistmaker.search.ui.view_model
 
-import android.app.Application
 import android.os.Handler
 import android.os.Looper
 import android.os.SystemClock
 import android.util.Log
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
-import com.itproger.playlistmaker.R
-import com.itproger.playlistmaker.search.creator.SearchCreator
 import com.itproger.playlistmaker.search.domain.api.TrackInteractor
 import com.itproger.playlistmaker.search.domain.models.Track
 import com.itproger.playlistmaker.search.ui.models.SearchScreenState
@@ -26,16 +18,7 @@ class TracksSearchViewModel(
     companion object {
         const val SEARCH_DEBOUNCE_DELAY = 2000L
         private val SEARCH_REQUEST_TOKEN = Any()
-
-//        fun getViewModelFactory(): ViewModelProvider.Factory = viewModelFactory {
-//            initializer {
-//                TracksSearchViewModel(this[APPLICATION_KEY] as Application)
-//            }
-//        }
     }
-
-//    private val trackInteractor =
-//        SearchCreator.provideTrackInteractor(getApplication<Application>())
 
     private val handler = Handler(Looper.getMainLooper())
 

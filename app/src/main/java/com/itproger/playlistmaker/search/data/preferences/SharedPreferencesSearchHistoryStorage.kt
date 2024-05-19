@@ -9,7 +9,10 @@ import com.itproger.playlistmaker.search.domain.models.Track
 const val HISTORY_TRACKS_LIST_KEY = "history_tracks_list"
 const val maxCountOfTracksInHistory = 10
 
-class SharedPreferencesSearchHistoryStorage(private val sharedPreferences: SharedPreferences, private val gson : Gson) :  //add
+class SharedPreferencesSearchHistoryStorage(
+    private val sharedPreferences: SharedPreferences,
+    private val gson: Gson
+) :  //add
     SearchHistoryStorage {
 
     override fun saveTrackToHistory(track: List<Track>) {
@@ -26,7 +29,6 @@ class SharedPreferencesSearchHistoryStorage(private val sharedPreferences: Share
             historyTracks.removeAt(maxCountOfTracksInHistory)
         }
 
-      //  val json = Gson().toJson(historyTracks)  //changed
         val json = gson.toJson(historyTracks)
         sharedPreferences.edit()
             .putString(HISTORY_TRACKS_LIST_KEY, json)
@@ -36,7 +38,6 @@ class SharedPreferencesSearchHistoryStorage(private val sharedPreferences: Share
     override fun readTracksFromHistory(): List<Track> {
         val json = sharedPreferences.getString(HISTORY_TRACKS_LIST_KEY, null) ?: return emptyList()
         Log.d("Test", "Читаю трек")
-       // return Gson().fromJson(json, object : TypeToken<List<Track>>() {}.type)
         return gson.fromJson(json, object : TypeToken<List<Track>>() {}.type)
     }
 
