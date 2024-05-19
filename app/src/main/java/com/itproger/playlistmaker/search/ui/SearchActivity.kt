@@ -6,6 +6,7 @@ import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
@@ -20,6 +21,7 @@ import com.itproger.playlistmaker.player.ui.PlayerActivity
 import com.itproger.playlistmaker.search.domain.models.Track
 import com.itproger.playlistmaker.search.ui.view_model.TracksSearchViewModel
 import com.itproger.playlistmaker.search.ui.models.SearchScreenState
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchActivity : AppCompatActivity() {
 
@@ -31,7 +33,8 @@ class SearchActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySearchBinding
 
-    private lateinit var viewModel: TracksSearchViewModel
+   // private lateinit var viewModel: TracksSearchViewModel
+   private val viewModel by viewModel<TracksSearchViewModel>()
 
     private val handler = Handler(Looper.getMainLooper())
 
@@ -56,11 +59,13 @@ class SearchActivity : AppCompatActivity() {
         binding = ActivitySearchBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        viewModel = ViewModelProvider(
-            this,
-            TracksSearchViewModel.getViewModelFactory()
-        )[TracksSearchViewModel::class.java]
-        viewModel.observeState().observe(this) {
+//        viewModel = ViewModelProvider(
+//            this,
+//            TracksSearchViewModel.getViewModelFactory()
+//        )[TracksSearchViewModel::class.java]
+//
+        Log.d("TEST", "viewModel")
+        viewModel.observeState().observe(this@SearchActivity) {
             render(it)
         }
 
@@ -186,7 +191,7 @@ class SearchActivity : AppCompatActivity() {
             }
 
             is SearchScreenState.Error -> showError(state.errorMessage)
-            is SearchScreenState.Empty -> showEmpty(state.message)
+            is SearchScreenState.Empty -> showEmpty()   //(state.message)
             is SearchScreenState.History -> showHistory()
             else -> {}
         }
@@ -215,7 +220,7 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
-    private fun showEmpty(emptyMessage: String) {
+    private fun showEmpty() {    //(emptyMessage: String)
         with(binding) {
             progressBar.isVisible = false
             historyLayout.isVisible = false
@@ -224,7 +229,7 @@ class SearchActivity : AppCompatActivity() {
             placeholderMessage.isVisible = true
 
             placeholderImage.setImageResource(R.drawable.nothing_found)
-            placeholderMessage.text = emptyMessage
+            placeholderMessage.setText(R.string.nothing_found)
         }
     }
 

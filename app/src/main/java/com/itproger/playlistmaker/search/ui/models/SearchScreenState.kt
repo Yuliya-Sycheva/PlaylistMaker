@@ -13,9 +13,11 @@ sealed interface SearchScreenState {
         val errorMessage: String
     ) : SearchScreenState
 
-    data class Empty(
-        val message: String
-    ) : SearchScreenState
+    object Empty : SearchScreenState
+
+//    data class Empty(
+//     val message: String
+//    ) : SearchScreenState
 
     data class History(
         val tracks: MutableList<Track>

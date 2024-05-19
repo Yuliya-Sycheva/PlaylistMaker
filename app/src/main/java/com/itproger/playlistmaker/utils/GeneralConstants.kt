@@ -6,4 +6,5 @@ object GeneralConstants {
     const val SERVER_ERROR = "Ошибка сервера"
     const val NO_INTERNET = -1
     const val SUCCESS_INTERNET = 200
+    const val iTunesBaseUrl = "https://itunes.apple.com"
 }

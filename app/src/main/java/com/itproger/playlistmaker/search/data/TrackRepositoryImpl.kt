@@ -5,16 +5,16 @@ import android.util.Log
 import com.itproger.playlistmaker.search.NetworkClient
 import com.itproger.playlistmaker.search.data.dto.TrackRequest
 import com.itproger.playlistmaker.search.data.dto.TrackResponse
+import com.itproger.playlistmaker.search.data.preferences.SharedPreferencesSearchHistoryStorage
 import com.itproger.playlistmaker.search.domain.api.TrackRepository
 import com.itproger.playlistmaker.search.domain.models.Track
-import com.itproger.playlistmaker.search.data.preferences.SharedPreferencesSearchClientImpl
 import com.itproger.playlistmaker.utils.GeneralConstants
 import com.itproger.playlistmaker.utils.Resource
 import com.itproger.playlistmaker.utils.TrackTimeConverter
 
 class TrackRepositoryImpl(
     private val networkClient: NetworkClient,
-    private val sharedPreferencesSearchClient: SharedPreferencesSearchClientImpl
+    private val sharedPreferencesSearchHistoryStorage: SharedPreferencesSearchHistoryStorage
 ) : TrackRepository {
 
     override fun searchTracks(text: String): Resource<List<Track>> {
@@ -50,14 +50,14 @@ class TrackRepositoryImpl(
     }
 
     override fun saveTrackToHistory(track: List<Track>) {
-        sharedPreferencesSearchClient.saveTrackToHistory(track)
+        sharedPreferencesSearchHistoryStorage.saveTrackToHistory(track)
     }
 
     override fun readTracksFromHistory(): List<Track> {
-        return sharedPreferencesSearchClient.readTracksFromHistory()
+        return sharedPreferencesSearchHistoryStorage.readTracksFromHistory()
     }
 
     override fun clearHistory() {
-        sharedPreferencesSearchClient.clearHistory()
+        sharedPreferencesSearchHistoryStorage.clearHistory()
     }
 }
