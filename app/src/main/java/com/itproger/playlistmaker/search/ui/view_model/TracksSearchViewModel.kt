@@ -74,7 +74,6 @@ class TracksSearchViewModel(
                         Log.d("TEST", "errorMessage")
                         renderState(
                             SearchScreenState.Error(
-                                //   errorMessage = getApplication<Application>().getString(R.string.something_went_wrong)
                                 errorMessage
                             )
                         )
@@ -84,10 +83,6 @@ class TracksSearchViewModel(
                         Log.d("TEST", "isEmpty")
                         renderState(
                             SearchScreenState.Empty
-//                            SearchScreenState.Empty(
-                            //  message = getApplication<Application>().getString(R.string.nothing_found)
-                            //  message = errorMessage!!
-//                            )
                         )
                     }
 

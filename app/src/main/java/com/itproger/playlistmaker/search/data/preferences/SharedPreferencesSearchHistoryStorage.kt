@@ -12,7 +12,7 @@ const val maxCountOfTracksInHistory = 10
 class SharedPreferencesSearchHistoryStorage(
     private val sharedPreferences: SharedPreferences,
     private val gson: Gson
-) :  //add
+) :
     SearchHistoryStorage {
 
     override fun saveTrackToHistory(track: List<Track>) {

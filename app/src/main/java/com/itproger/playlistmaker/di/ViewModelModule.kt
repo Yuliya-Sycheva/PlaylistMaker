@@ -7,7 +7,7 @@ import org.koin.dsl.module
 
 val viewModelModule = module {
 
-    viewModel {
+    viewModel<TracksSearchViewModel> {
         Log.d("TEST", "viewModel_Module")
         TracksSearchViewModel(trackInteractor = get())
     }

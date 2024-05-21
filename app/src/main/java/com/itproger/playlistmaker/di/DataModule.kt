@@ -1,6 +1,7 @@
 package com.itproger.playlistmaker.di
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.util.Log
 import com.google.gson.Gson
 import com.itproger.playlistmaker.search.NetworkClient
@@ -13,6 +14,8 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.concurrent.Executor
+import java.util.concurrent.Executors
 
 val dataModule = module {
 
@@ -25,13 +28,13 @@ val dataModule = module {
             .create(ITunesApi::class.java) // factory?
     }
 
-    single {
+    single <SharedPreferences> {   //добавила в <>
+        Log.d("TEST", "getSharedPreferences_Module")
         androidContext().getSharedPreferences(
             GeneralConstants.SEARCH_HISTORY_PREFERENCES,
             // AppCompatActivity.MODE_PRIVATE
             Context.MODE_PRIVATE
         )
-        Log.d("TEST", "getSharedPreferences_Module")
     }
 
     factory {
@@ -39,7 +42,7 @@ val dataModule = module {
         Gson()
     }
 
-    single<SearchHistoryStorage> {
+    single <SearchHistoryStorage> {  // поменяла на factory
         Log.d("TEST", "SharedPreferencesSearchHistoryStorage_Module")
         SharedPreferencesSearchHistoryStorage(sharedPreferences = get(), gson = get())  //
     }
@@ -47,5 +50,9 @@ val dataModule = module {
     single<NetworkClient> {      //single?
         Log.d("TEST", "RetrofitNetworkClient_Module")
         RetrofitNetworkClient(api = get(), context = androidContext())
+    }
+
+    single<Executor> {
+        Executors.newCachedThreadPool()
     }
 }

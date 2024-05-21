@@ -5,6 +5,7 @@ import android.util.Log
 import com.itproger.playlistmaker.search.NetworkClient
 import com.itproger.playlistmaker.search.data.dto.TrackRequest
 import com.itproger.playlistmaker.search.data.dto.TrackResponse
+import com.itproger.playlistmaker.search.data.preferences.SearchHistoryStorage
 import com.itproger.playlistmaker.search.data.preferences.SharedPreferencesSearchHistoryStorage
 import com.itproger.playlistmaker.search.domain.api.TrackRepository
 import com.itproger.playlistmaker.search.domain.models.Track
@@ -14,7 +15,7 @@ import com.itproger.playlistmaker.utils.TrackTimeConverter
 
 class TrackRepositoryImpl(
     private val networkClient: NetworkClient,
-    private val sharedPreferencesSearchHistoryStorage: SharedPreferencesSearchHistoryStorage
+    private val sharedPreferencesSearchHistoryStorage: SearchHistoryStorage
 ) : TrackRepository {
 
     override fun searchTracks(text: String): Resource<List<Track>> {

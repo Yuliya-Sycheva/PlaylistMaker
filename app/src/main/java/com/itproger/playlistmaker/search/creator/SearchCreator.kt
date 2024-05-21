@@ -10,7 +10,7 @@ import com.itproger.playlistmaker.search.domain.impl.TrackInteractorImpl
 import com.itproger.playlistmaker.search.data.preferences.SharedPreferencesSearchHistoryStorage
 import com.itproger.playlistmaker.utils.GeneralConstants
 
-object SearchCreator {
+//object SearchCreator {
 //    private fun getTrackRepository(context: Context): TrackRepository {
 //        return TrackRepositoryImpl(
 //            RetrofitNetworkClient(context), SharedPreferencesSearchHistoryStorage(
@@ -21,8 +21,8 @@ object SearchCreator {
 //            )
 //        )
 //    }
-
+//
 //    fun provideTrackInteractor(context: Context): TrackInteractor {
 //        return TrackInteractorImpl(getTrackRepository(context))
 //    }
-}
+//}

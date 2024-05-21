@@ -31,7 +31,7 @@ class SearchActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySearchBinding
 
-   private val viewModel by viewModel<TracksSearchViewModel>()
+    private val viewModel by viewModel<TracksSearchViewModel>()
 
     private val handler = Handler(Looper.getMainLooper())
 
