@@ -14,22 +14,19 @@ import com.itproger.playlistmaker.databinding.ActivityPlayerBinding
 import com.itproger.playlistmaker.player.ui.models.PlayerStateInterface
 import com.itproger.playlistmaker.player.ui.view_model.PlayerViewModel
 import com.itproger.playlistmaker.search.domain.models.Track
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PlayerActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityPlayerBinding
 
-    private lateinit var viewModel: PlayerViewModel
+    private val viewModel by viewModel<PlayerViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityPlayerBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        viewModel = ViewModelProvider(
-            this,
-            PlayerViewModel.getViewModelFactory()
-        )[PlayerViewModel::class.java]
         viewModel.observeState().observe(this) {
             render(it)
         }

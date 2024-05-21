@@ -7,10 +7,11 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
-import com.itproger.playlistmaker.player.creator.PlayerCreator
+import com.itproger.playlistmaker.player.domain.interactor.PlayerInteractor
 import com.itproger.playlistmaker.player.ui.models.PlayerStateInterface
 import com.itproger.playlistmaker.search.domain.models.Track
 import java.text.SimpleDateFormat
@@ -18,24 +19,14 @@ import java.util.Locale
 
 
 class PlayerViewModel(
-    application: Application,
-) : AndroidViewModel(application) {
-
+    private val playerInteractor : PlayerInteractor
+) : ViewModel() {
 
     companion object {
         const val DELAY = 500L
         const val TRACK_FINISH = 29_900L
         const val MISTAKE = "Mistake"
-
-        fun getViewModelFactory(): ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                PlayerViewModel(this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as Application)
-            }
-        }
     }
-
-    private val playerInteractor =
-        PlayerCreator.providePlayerInteractor()
 
     private val mainThreadHandler = Handler(Looper.getMainLooper())
 
@@ -81,7 +72,6 @@ class PlayerViewModel(
     private fun renderState(state: PlayerStateInterface) {
         stateLiveData.postValue(state)
     }
-
 
     fun preparePlayer(track: Track) {
         playerInteractor.preparePlayer(

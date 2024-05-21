@@ -7,12 +7,12 @@ import com.itproger.playlistmaker.player.domain.interactor.PlayerInteractor
 import com.itproger.playlistmaker.player.domain.interactor.impl.PlayerInteractorImpl
 import com.itproger.playlistmaker.player.domain.repository.PlayerRepository
 
-object PlayerCreator {
-    private fun getPlayerRepository(): PlayerRepository {
-        return PlayerRepositoryImpl()
-    }
-
-    fun providePlayerInteractor(): PlayerInteractor {
-        return PlayerInteractorImpl(getPlayerRepository())
-    }
-}
+//object PlayerCreator {
+//    private fun getPlayerRepository(): PlayerRepository {
+//        return PlayerRepositoryImpl()
+//    }
+//
+//    fun providePlayerInteractor(): PlayerInteractor {
+//        return PlayerInteractorImpl(getPlayerRepository())
+//    }
+//}
