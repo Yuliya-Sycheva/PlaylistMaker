@@ -10,6 +10,7 @@ import com.itproger.playlistmaker.search.data.network.ITunesApi
 import com.itproger.playlistmaker.search.data.network.RetrofitNetworkClient
 import com.itproger.playlistmaker.search.data.preferences.SearchHistoryStorage
 import com.itproger.playlistmaker.search.data.preferences.SharedPreferencesSearchHistoryStorage
+import com.itproger.playlistmaker.sharing.domain.model.EmailData
 import com.itproger.playlistmaker.utils.GeneralConstants
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
@@ -29,7 +30,7 @@ val dataModule = module {
             .create(ITunesApi::class.java)
     }
 
-    single <SharedPreferences> {   //добавила в <>
+    single<SharedPreferences> {   //добавила в <>
         Log.d("TEST", "getSharedPreferences_Module")
         androidContext().getSharedPreferences(
             GeneralConstants.SEARCH_HISTORY_PREFERENCES,
@@ -42,7 +43,7 @@ val dataModule = module {
         Gson()
     }
 
-    single <SearchHistoryStorage> {
+    single<SearchHistoryStorage> {
         Log.d("TEST", "SharedPreferencesSearchHistoryStorage_Module")
         SharedPreferencesSearchHistoryStorage(sharedPreferences = get(), gson = get())  //
     }
@@ -56,7 +57,19 @@ val dataModule = module {
         Executors.newCachedThreadPool()
     }
 
-    factory <MediaPlayer> {
+    factory<MediaPlayer> {
         MediaPlayer()
+    }
+
+    single {
+        Log.d("TEST", "getSharedPreferences_Settings_Module")
+        androidContext().getSharedPreferences(
+            GeneralConstants.THEME_PREFERENCES,
+            Context.MODE_PRIVATE
+        )
+    }
+
+    single<EmailData> {
+        EmailData()
     }
 }

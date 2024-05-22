@@ -7,4 +7,5 @@ object GeneralConstants {
     const val NO_INTERNET = -1
     const val SUCCESS_INTERNET = 200
     const val iTunesBaseUrl = "https://itunes.apple.com"
+    const val THEME_PREFERENCES = "playlist_maker_theme_preferences"
 }

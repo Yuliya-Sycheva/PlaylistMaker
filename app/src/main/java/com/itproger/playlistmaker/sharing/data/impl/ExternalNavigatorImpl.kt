@@ -8,9 +8,8 @@ import com.itproger.playlistmaker.R
 import com.itproger.playlistmaker.sharing.domain.ExternalNavigator
 import com.itproger.playlistmaker.sharing.domain.model.EmailData
 
-class ExternalNavigatorImpl(private val context: Context) : ExternalNavigator {
-
-    private val emailData = EmailData()
+class ExternalNavigatorImpl(private val context: Context, private val emailData: EmailData) :
+    ExternalNavigator {
 
     override fun shareLink() {
         context.startActivity(
