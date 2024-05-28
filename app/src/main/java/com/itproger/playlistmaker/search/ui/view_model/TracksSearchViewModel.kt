@@ -117,6 +117,6 @@ class TracksSearchViewModel(
 
     fun onClearIconClick() {
         val historyTracks = readTracksFromHistory()
-        renderState(SearchScreenState.History(historyTracks as MutableList<Track>))
+        renderState(SearchScreenState.History(historyTracks.toMutableList()))
     }
 }

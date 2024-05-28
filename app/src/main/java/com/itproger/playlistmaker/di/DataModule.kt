@@ -10,8 +10,6 @@ import com.itproger.playlistmaker.search.data.network.ITunesApi
 import com.itproger.playlistmaker.search.data.network.RetrofitNetworkClient
 import com.itproger.playlistmaker.search.data.preferences.SearchHistoryStorage
 import com.itproger.playlistmaker.search.data.preferences.SharedPreferencesSearchHistoryStorage
-import com.itproger.playlistmaker.sharing.domain.model.EmailData
-import com.itproger.playlistmaker.utils.GeneralConstants
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 import retrofit2.Retrofit
@@ -19,12 +17,16 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.Executor
 import java.util.concurrent.Executors
 
+private const val SEARCH_HISTORY_PREFERENCES = "playlist_maker_search_history_preferences"
+private const val iTunesBaseUrl = "https://itunes.apple.com"
+private const val THEME_PREFERENCES = "playlist_maker_theme_preferences"
+
 val dataModule = module {
 
     single<ITunesApi> {
         Log.d("TEST", "ITunesApi_Module")
         Retrofit.Builder()
-            .baseUrl(GeneralConstants.iTunesBaseUrl)
+            .baseUrl(iTunesBaseUrl)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(ITunesApi::class.java)
@@ -33,12 +35,12 @@ val dataModule = module {
     single<SharedPreferences> {   //добавила в <>
         Log.d("TEST", "getSharedPreferences_Module")
         androidContext().getSharedPreferences(
-            GeneralConstants.SEARCH_HISTORY_PREFERENCES,
+            SEARCH_HISTORY_PREFERENCES,
             Context.MODE_PRIVATE
         )
     }
 
-    factory {
+    single {
         Log.d("TEST", " Gson_Module")
         Gson()
     }
@@ -64,12 +66,8 @@ val dataModule = module {
     single {
         Log.d("TEST", "getSharedPreferences_Settings_Module")
         androidContext().getSharedPreferences(
-            GeneralConstants.THEME_PREFERENCES,
+            THEME_PREFERENCES,
             Context.MODE_PRIVATE
         )
-    }
-
-    single<EmailData> {
-        EmailData()
     }
 }

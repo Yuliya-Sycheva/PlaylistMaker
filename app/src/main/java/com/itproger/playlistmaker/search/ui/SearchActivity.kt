@@ -87,7 +87,7 @@ class SearchActivity : AppCompatActivity() {
         binding.query.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus && binding.query.text.isEmpty()) {
                 val historyTracks = viewModel.readTracksFromHistory().toMutableList()
-                historyAdapter.setData(historyTracks)
+                updateHistoryList(historyTracks)
                 binding.historyLayout.isVisible =
                     historyTracks.isNotEmpty()
             } else {
@@ -113,7 +113,11 @@ class SearchActivity : AppCompatActivity() {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 binding.clearIcon.isVisible = clearButtonVisibility(s)
-                binding.historyLayout.isVisible = binding.query.hasFocus() && s?.isEmpty() == true
+                if (binding.query.hasFocus() && s?.isEmpty() == true) {
+                    binding.historyLayout.isVisible
+                } else {
+                    hideHistory()
+                }
                 viewModel.searchDebounce(
                     changedText = s?.toString() ?: ""
                 )
@@ -147,9 +151,16 @@ class SearchActivity : AppCompatActivity() {
         }
     } // конец onCreate()
 
+    override fun onResume() {
+        super.onResume()
+        val historyTracks = viewModel.readTracksFromHistory().toMutableList()
+        updateHistoryList(historyTracks)
+    }
+
     private fun openPlayer(clickedTrack: Track) {
         if (clickDebounce()) {
             viewModel.onClickedTrack(listOf(clickedTrack))   // странно как-то, что я передаю здесь List, а не track = ?
+            historyAdapter.notifyDataSetChanged()
             val playerIntent = Intent(this, PlayerActivity::class.java)
             playerIntent.putExtra(CLICKED_TRACK, clickedTrack)
             startActivity(playerIntent)
@@ -213,7 +224,7 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
-    private fun showEmpty() {    //(emptyMessage: String)
+    private fun showEmpty() {
         with(binding) {
             progressBar.isVisible = false
             historyLayout.isVisible = false
@@ -261,5 +272,10 @@ class SearchActivity : AppCompatActivity() {
             youWereLookingFor.isVisible = true
             cleanHistory.isVisible = true
         }
+    }
+
+    private fun updateHistoryList(historyTracks: MutableList<Track>) {
+        historyAdapter.setData(historyTracks)
+        historyAdapter.notifyDataSetChanged()
     }
 }

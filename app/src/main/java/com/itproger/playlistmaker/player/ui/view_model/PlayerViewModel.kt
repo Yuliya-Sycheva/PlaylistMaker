@@ -22,7 +22,7 @@ class PlayerViewModel(
     private val playerInteractor : PlayerInteractor
 ) : ViewModel() {
 
-    companion object {
+    private companion object {
         const val DELAY = 500L
         const val TRACK_FINISH = 29_900L
         const val MISTAKE = "Mistake"

@@ -24,6 +24,7 @@ class SharedPreferencesSearchHistoryStorage(
         }
 
         historyTracks.addAll(0, track)
+        Log.d("Test", "Сохраняю трек $track")
 
         if (historyTracks.size > maxCountOfTracksInHistory) {
             historyTracks.removeAt(maxCountOfTracksInHistory)

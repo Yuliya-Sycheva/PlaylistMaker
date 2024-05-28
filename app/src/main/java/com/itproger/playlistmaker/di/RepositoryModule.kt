@@ -30,6 +30,6 @@ val repositoryModule = module {
     }
 
     single<ExternalNavigator> {
-        ExternalNavigatorImpl(androidContext(), emailData = get())
+        ExternalNavigatorImpl(androidContext())
     }
 }

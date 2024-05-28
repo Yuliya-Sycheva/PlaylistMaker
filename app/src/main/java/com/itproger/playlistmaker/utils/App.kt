@@ -23,7 +23,7 @@ class App : Application() {
             androidContext(this@App)
             modules(listOf(dataModule, repositoryModule, interactorModule, viewModelModule))
         }
-      //  settingsInteractor = SettingsCreator.providesettingsInteractor(this)
+
         val settingsInteractor : SettingsInteractor by inject()
 
         darkTheme = settingsInteractor.getThemeSettings().darkTheme
