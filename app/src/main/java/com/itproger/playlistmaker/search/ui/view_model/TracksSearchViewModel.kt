@@ -1,40 +1,24 @@
 package com.itproger.playlistmaker.search.ui.view_model
 
-import android.app.Application
 import android.os.Handler
 import android.os.Looper
 import android.os.SystemClock
 import android.util.Log
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
-import com.itproger.playlistmaker.R
-import com.itproger.playlistmaker.search.creator.SearchCreator
+import androidx.lifecycle.ViewModel
 import com.itproger.playlistmaker.search.domain.api.TrackInteractor
 import com.itproger.playlistmaker.search.domain.models.Track
 import com.itproger.playlistmaker.search.ui.models.SearchScreenState
 
 class TracksSearchViewModel(
-    application: Application,
-) : AndroidViewModel(application) {
+    private val trackInteractor: TrackInteractor
+) : ViewModel() {
 
     companion object {
         const val SEARCH_DEBOUNCE_DELAY = 2000L
         private val SEARCH_REQUEST_TOKEN = Any()
-
-        fun getViewModelFactory(): ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                TracksSearchViewModel(this[APPLICATION_KEY] as Application)
-            }
-        }
     }
-
-    private val trackInteractor =
-        SearchCreator.provideTrackInteractor(getApplication<Application>())
 
     private val handler = Handler(Looper.getMainLooper())
 
@@ -90,7 +74,7 @@ class TracksSearchViewModel(
                         Log.d("TEST", "errorMessage")
                         renderState(
                             SearchScreenState.Error(
-                                errorMessage = getApplication<Application>().getString(R.string.something_went_wrong)
+                                errorMessage
                             )
                         )
                     }
@@ -98,11 +82,7 @@ class TracksSearchViewModel(
                     foundTracks?.isEmpty() == true -> {
                         Log.d("TEST", "isEmpty")
                         renderState(
-                            SearchScreenState.Empty(
-                                message = getApplication<Application>().getString(
-                                    R.string.nothing_found
-                                )
-                            )
+                            SearchScreenState.Empty
                         )
                     }
 
@@ -137,6 +117,6 @@ class TracksSearchViewModel(
 
     fun onClearIconClick() {
         val historyTracks = readTracksFromHistory()
-        renderState(SearchScreenState.History(historyTracks as MutableList<Track>))
+        renderState(SearchScreenState.History(historyTracks.toMutableList()))
     }
 }

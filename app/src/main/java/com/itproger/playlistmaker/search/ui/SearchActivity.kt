@@ -6,12 +6,11 @@ import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.View
+import android.util.Log
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.itproger.playlistmaker.R
 import com.itproger.playlistmaker.search.ui.adapters.TrackAdapter
@@ -20,6 +19,7 @@ import com.itproger.playlistmaker.player.ui.PlayerActivity
 import com.itproger.playlistmaker.search.domain.models.Track
 import com.itproger.playlistmaker.search.ui.view_model.TracksSearchViewModel
 import com.itproger.playlistmaker.search.ui.models.SearchScreenState
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchActivity : AppCompatActivity() {
 
@@ -31,7 +31,7 @@ class SearchActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySearchBinding
 
-    private lateinit var viewModel: TracksSearchViewModel
+    private val viewModel by viewModel<TracksSearchViewModel>()
 
     private val handler = Handler(Looper.getMainLooper())
 
@@ -56,11 +56,9 @@ class SearchActivity : AppCompatActivity() {
         binding = ActivitySearchBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        viewModel = ViewModelProvider(
-            this,
-            TracksSearchViewModel.getViewModelFactory()
-        )[TracksSearchViewModel::class.java]
-        viewModel.observeState().observe(this) {
+        Log.d("TEST", "onCreate_start")
+        viewModel.observeState().observe(this@SearchActivity) {
+            Log.d("TEST", "render")
             render(it)
         }
 
@@ -89,7 +87,7 @@ class SearchActivity : AppCompatActivity() {
         binding.query.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus && binding.query.text.isEmpty()) {
                 val historyTracks = viewModel.readTracksFromHistory().toMutableList()
-                historyAdapter.setData(historyTracks)
+                updateHistoryList(historyTracks)
                 binding.historyLayout.isVisible =
                     historyTracks.isNotEmpty()
             } else {
@@ -115,7 +113,11 @@ class SearchActivity : AppCompatActivity() {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 binding.clearIcon.isVisible = clearButtonVisibility(s)
-                binding.historyLayout.isVisible = binding.query.hasFocus() && s?.isEmpty() == true
+                if (binding.query.hasFocus() && s?.isEmpty() == true) {
+                    binding.historyLayout.isVisible
+                } else {
+                    hideHistory()
+                }
                 viewModel.searchDebounce(
                     changedText = s?.toString() ?: ""
                 )
@@ -149,9 +151,16 @@ class SearchActivity : AppCompatActivity() {
         }
     } // конец onCreate()
 
+    override fun onResume() {
+        super.onResume()
+        val historyTracks = viewModel.readTracksFromHistory().toMutableList()
+        updateHistoryList(historyTracks)
+    }
+
     private fun openPlayer(clickedTrack: Track) {
         if (clickDebounce()) {
             viewModel.onClickedTrack(listOf(clickedTrack))   // странно как-то, что я передаю здесь List, а не track = ?
+            historyAdapter.notifyDataSetChanged()
             val playerIntent = Intent(this, PlayerActivity::class.java)
             playerIntent.putExtra(CLICKED_TRACK, clickedTrack)
             startActivity(playerIntent)
@@ -186,7 +195,7 @@ class SearchActivity : AppCompatActivity() {
             }
 
             is SearchScreenState.Error -> showError(state.errorMessage)
-            is SearchScreenState.Empty -> showEmpty(state.message)
+            is SearchScreenState.Empty -> showEmpty()   //(state.message)
             is SearchScreenState.History -> showHistory()
             else -> {}
         }
@@ -215,7 +224,7 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
-    private fun showEmpty(emptyMessage: String) {
+    private fun showEmpty() {
         with(binding) {
             progressBar.isVisible = false
             historyLayout.isVisible = false
@@ -224,7 +233,7 @@ class SearchActivity : AppCompatActivity() {
             placeholderMessage.isVisible = true
 
             placeholderImage.setImageResource(R.drawable.nothing_found)
-            placeholderMessage.text = emptyMessage
+            placeholderMessage.setText(R.string.nothing_found)
         }
     }
 
@@ -263,5 +272,10 @@ class SearchActivity : AppCompatActivity() {
             youWereLookingFor.isVisible = true
             cleanHistory.isVisible = true
         }
+    }
+
+    private fun updateHistoryList(historyTracks: MutableList<Track>) {
+        historyAdapter.setData(historyTracks)
+        historyAdapter.notifyDataSetChanged()
     }
 }

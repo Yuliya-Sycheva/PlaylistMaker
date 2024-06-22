@@ -6,13 +6,11 @@ import com.itproger.playlistmaker.player.domain.repository.PlayerRepository
 import com.itproger.playlistmaker.search.domain.models.Track
 
 
-class PlayerRepositoryImpl : PlayerRepository {
+class PlayerRepositoryImpl(private val mediaPlayer : MediaPlayer) : PlayerRepository {
 
     companion object {
         const val MISTAKE = "Mistake"
     }
-
-    private val mediaPlayer = MediaPlayer()
 
     override val playerDuration: Int
         get() = mediaPlayer.duration
