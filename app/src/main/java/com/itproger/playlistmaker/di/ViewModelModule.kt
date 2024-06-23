@@ -1,6 +1,8 @@
 package com.itproger.playlistmaker.di
 
 import android.util.Log
+import com.itproger.playlistmaker.library.ui.view_model.InFavoriteViewModel
+import com.itproger.playlistmaker.library.ui.view_model.PlaylistsViewModel
 import com.itproger.playlistmaker.player.ui.view_model.PlayerViewModel
 import com.itproger.playlistmaker.search.ui.view_model.TracksSearchViewModel
 import com.itproger.playlistmaker.settings.ui.view_model.SettingsViewModel
@@ -22,5 +24,13 @@ val viewModelModule = module {
     viewModel<SettingsViewModel>() {
         Log.d("TEST", "SettingsViewModel_Module")
         SettingsViewModel(sharingInteractor = get(), settingsInteractor = get())
+    }
+
+    viewModel {
+        InFavoriteViewModel()
+    }
+
+    viewModel {
+        PlaylistsViewModel()
     }
 }
