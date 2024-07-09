@@ -8,7 +8,7 @@ object TrackTimeConverter {
         return SimpleDateFormat("mm:ss", Locale.getDefault()).format(milliseconds)
     }
 
-    fun setTrackYear(year: String) : String {
-        return year.substring(0, 4)
+    fun setTrackYear(year: String?) : String {
+        return year?.substring(0, 4) ?: ""
     }
 }
