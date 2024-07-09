@@ -6,7 +6,7 @@ import com.google.android.material.tabs.TabLayoutMediator
 import com.itproger.playlistmaker.R
 import com.itproger.playlistmaker.databinding.ActivityLibraryBinding
 
-class LibraryActivity : AppCompatActivity(), LibrarySelectPage {
+class LibraryActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityLibraryBinding
 
@@ -31,10 +31,6 @@ class LibraryActivity : AppCompatActivity(), LibrarySelectPage {
         binding.back.setOnClickListener {
             finish()
         }
-    }
-
-    override fun navigateTo(page: Int) {
-        binding.viewPager.currentItem = page
     }
 
     override fun onDestroy() {
