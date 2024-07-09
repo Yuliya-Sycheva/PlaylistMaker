@@ -1,14 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".library.ui.LibraryActivity">
+    android:background="?attr/colorPrimary"
+    android:orientation="vertical"
+    android:theme="@style/Theme.PlaylistMaker">
 
-    <TextView
-        android:id="@+id/message"
-        style="@style/TextOfPreviewActivityStyle"
-        android:text="@string/media_library"/>
+    <LinearLayout style="@style/LayoutOfPanelHeader">
 
-</FrameLayout>
+        <ImageView
+            android:id="@+id/back"
+            style="@style/ImageViewBackStyle" />
+
+        <TextView
+            style="@style/TextMedium22"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/padding_12dp"
+            android:paddingTop="@dimen/padding_10dp"
+            android:paddingBottom="@dimen/padding_12dp"
+            android:paddingRight="86sp"
+            android:text="@string/media_library" />
+    </LinearLayout>
+
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tabLayout"
+        app:tabTextAppearance="@style/TextMedium14"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        app:tabTextColor="?attr/colorOnPrimary"
+        app:tabIndicatorColor="?attr/colorOnPrimary"
+        app:tabIndicatorFullWidth="true"
+        app:tabRippleColor="@color/YP_Light_Gray"/>
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/viewPager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"/>
+</LinearLayout>

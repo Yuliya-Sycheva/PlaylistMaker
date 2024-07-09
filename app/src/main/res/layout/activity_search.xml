@@ -92,20 +92,17 @@
 
     <TextView
         android:id="@+id/placeholderMessage"
+        style="@style/TextMedium19"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/margin_24dp"
         android:layout_marginTop="@dimen/margin_16dp"
-        android:fontFamily="@font/ys_display_medium"
         android:gravity="center"
-        android:textColor="?attr/colorOnPrimary"
-        android:textFontWeight="400"
-        android:textSize="19sp"
         android:visibility="gone"/>
 
     <Button
         android:id="@+id/updateButton"
-        style="@style/ButtonsOfSearchActivityStyle"
+        style="@style/ButtonsStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -152,7 +149,7 @@
 
         <Button
             android:id="@+id/cleanHistory"
-            style="@style/ButtonsOfSearchActivityStyle"
+            style="@style/ButtonsStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
