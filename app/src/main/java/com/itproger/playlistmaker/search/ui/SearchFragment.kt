@@ -115,7 +115,7 @@ class SearchFragment : Fragment() {
             historyAdapter.notifyDataSetChanged()
             hidePlaceholdersAndUpdateBtn()
             val imm =
-                requireContext().getSystemService(AppCompatActivity.INPUT_METHOD_SERVICE) as InputMethodManager   /////
+                requireContext().getSystemService(AppCompatActivity.INPUT_METHOD_SERVICE) as InputMethodManager
             imm.hideSoftInputFromWindow(binding.query.windowToken, 0)
         }
 
@@ -174,20 +174,10 @@ class SearchFragment : Fragment() {
         _binding = null
     }
 
-    private fun openPlayer(clickedTrack: Track) {   //???????????????????????????
+    private fun openPlayer(clickedTrack: Track) {
         if (clickDebounce()) {
             viewModel.onClickedTrack(listOf(clickedTrack))
             historyAdapter.notifyDataSetChanged()
-            //было:
-//            val playerIntent = Intent(this, PlayerActivity::class.java)
-//            playerIntent.putExtra(SearchFragment.CLICKED_TRACK, clickedTrack)
-//            startActivity(playerIntent)
-
-            //через Intent:
-//            val playerIntent = Intent(requireActivity(), PlayerActivity::class.java)
-//            playerIntent.putExtra(SearchFragment.CLICKED_TRACK, clickedTrack)
-//            startActivity(playerIntent)
-
             findNavController().navigate(
                 R.id.action_searchFragment_to_playerActivity,
                 bundleOf(CLICKED_TRACK to clickedTrack)
