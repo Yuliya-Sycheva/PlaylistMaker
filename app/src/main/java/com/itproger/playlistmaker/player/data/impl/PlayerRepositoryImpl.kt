@@ -6,7 +6,7 @@ import com.itproger.playlistmaker.player.domain.repository.PlayerRepository
 import com.itproger.playlistmaker.search.domain.models.Track
 
 
-class PlayerRepositoryImpl(private val mediaPlayer : MediaPlayer) : PlayerRepository {
+class PlayerRepositoryImpl(private val mediaPlayer: MediaPlayer) : PlayerRepository {
 
     companion object {
         const val MISTAKE = "Mistake"
@@ -22,15 +22,19 @@ class PlayerRepositoryImpl(private val mediaPlayer : MediaPlayer) : PlayerReposi
         onPreparedListener: () -> Unit,
         onPlayerCompletion: () -> Unit
     ) {
-        mediaPlayer.setDataSource(track.previewUrl)
-        mediaPlayer.prepareAsync()
-        mediaPlayer.setOnPreparedListener {
-            onPreparedListener.invoke()
-            Log.d(MISTAKE, "onPreparedListener.invoke()")
-        }
-        mediaPlayer.setOnCompletionListener {
-            onPlayerCompletion.invoke()
-            Log.d(MISTAKE, "localOnPlayerCompletion.invoke()")
+        if (track.previewUrl != null) {
+            mediaPlayer.setDataSource(track.previewUrl)
+            mediaPlayer.prepareAsync()
+            mediaPlayer.setOnPreparedListener {
+                onPreparedListener.invoke()
+                Log.d(MISTAKE, "onPreparedListener.invoke()")
+            }
+            mediaPlayer.setOnCompletionListener {
+                onPlayerCompletion.invoke()
+                Log.d(MISTAKE, "localOnPlayerCompletion.invoke()")
+            }
+        } else {
+            Log.e(MISTAKE, "Preview URL is null")  //нужно это добавлять?
         }
 
     }

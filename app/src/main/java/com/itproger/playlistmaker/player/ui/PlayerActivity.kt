@@ -2,6 +2,7 @@ package com.itproger.playlistmaker.player.ui
 
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
