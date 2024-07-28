@@ -1,6 +1,5 @@
 package com.itproger.playlistmaker.search.data
 
-
 import android.util.Log
 import com.itproger.playlistmaker.search.NetworkClient
 import com.itproger.playlistmaker.search.data.dto.TrackRequest
@@ -10,6 +9,8 @@ import com.itproger.playlistmaker.search.domain.api.TrackRepository
 import com.itproger.playlistmaker.search.domain.models.Track
 import com.itproger.playlistmaker.utils.Resource
 import com.itproger.playlistmaker.utils.TrackTimeConverter
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 
 class TrackRepositoryImpl(
     private val networkClient: NetworkClient,
@@ -17,22 +18,23 @@ class TrackRepositoryImpl(
 ) : TrackRepository {
 
     private companion object {
-        const val CHECK_INTERNET = "Проблемы со связью \\n\\nЗагрузка не удалась. Проверьте подключение к интернету"
+        const val CHECK_INTERNET =
+            "Проблемы со связью \\n\\nЗагрузка не удалась. Проверьте подключение к интернету"
         const val NO_INTERNET = -1
         const val SUCCESS_INTERNET = 200
         const val SERVER_ERROR = "Ошибка сервера"
     }
 
-    override fun searchTracks(text: String): Resource<List<Track>> {
+    override fun searchTracks(text: String): Flow<Resource<List<Track>>> = flow {
         val response = networkClient.doRequest(TrackRequest(text))
-        return when (response.resultCode) {
+        when (response.resultCode) {
             NO_INTERNET -> {
                 Log.d("TEST", "-1")
-                Resource.Error(CHECK_INTERNET)
+                emit(Resource.Error(CHECK_INTERNET))
             }
 
             SUCCESS_INTERNET -> {
-                Resource.Success((response as TrackResponse).results.map {
+                emit(Resource.Success((response as TrackResponse).results.map {
                     Track(
                         it.trackId,
                         it.trackName,
@@ -45,12 +47,12 @@ class TrackRepositoryImpl(
                         it.country,
                         it.previewUrl
                     )
-                })
+                }))
             }
 
             else -> {
                 Log.d("TEST", SERVER_ERROR)
-                Resource.Error(SERVER_ERROR)
+                emit(Resource.Error(SERVER_ERROR))
             }
         }
     }

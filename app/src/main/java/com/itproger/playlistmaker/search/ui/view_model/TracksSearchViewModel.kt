@@ -1,8 +1,5 @@
 package com.itproger.playlistmaker.search.ui.view_model
 
-import android.os.Handler
-import android.os.Looper
-import android.os.SystemClock
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -26,11 +23,6 @@ class TracksSearchViewModel(
     }
 
     private var searchDebounceJob: Job? = null
-//    private val trackSearchDebounce =      //    &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
-//        debounce<String>(SEARCH_DEBOUNCE_DELAY, viewModelScope, true) {
-//        changedText -> searchTrack(changedText)
-//        }
-
 
     private val stateLiveData = MutableLiveData<SearchScreenState>()
     fun observeState(): LiveData<SearchScreenState> = stateLiveData
@@ -52,7 +44,6 @@ class TracksSearchViewModel(
             delay(SEARCH_DEBOUNCE_DELAY)
             searchTrack(changedText)
         }
-        //trackSearchDebounce(changedText) //&&&&&&&&&&&&&&&&&&&&&&&
     }
 
     fun searchTrack(newSearchText: String) {
@@ -62,46 +53,48 @@ class TracksSearchViewModel(
         }
 
         searchDebounceJob?.cancel()  //чтобы не происходил повторный поиск при нажатии на галочку, потому не стала исп-ть debounce()
-        //???????????
-      //  handler.removeCallbacksAndMessages(SEARCH_REQUEST_TOKEN)  //чтобы не происходил повторный поиск при нажатии на галочку
 
         renderState(SearchScreenState.Loading)
 
-        trackInteractor.searchTracks(newSearchText, object : TrackInteractor.TrackConsumer {
-            override fun consume(
-                foundTracks: List<Track>?,
-                errorMessage: String?
-            ) {
-                val tracks = mutableListOf<Track>()
-
-                if (foundTracks != null) {
-                    tracks.clear()   //нет в примере
-                    tracks.addAll(foundTracks)
+        viewModelScope.launch {
+            trackInteractor.searchTracks(newSearchText)
+                .collect { pair ->
+                    processResult(pair.first, pair.second)
                 }
-                when {
-                    errorMessage != null -> {
-                        Log.d("TEST", "errorMessage")
-                        renderState(
-                            SearchScreenState.Error(
-                                errorMessage
-                            )
-                        )
-                    }
+        }
+    }
 
-                    foundTracks?.isEmpty() == true -> {
-                        Log.d("TEST", "isEmpty")
-                        renderState(
-                            SearchScreenState.Empty
-                        )
-                    }
+    private fun processResult(
+        foundTracks: List<Track>?,
+        errorMessage: String?
+    ) {
+        val tracks = mutableListOf<Track>()
 
-                    else -> {
-                        renderState(SearchScreenState.Content(tracks = tracks))
-                    }
-                }
+        if (foundTracks != null) {
+            tracks.clear()   //нет в примере
+            tracks.addAll(foundTracks)
+        }
+        when {
+            errorMessage != null -> {
+                Log.d("TEST", "errorMessage")
+                renderState(
+                    SearchScreenState.Error(
+                        errorMessage
+                    )
+                )
+            }
+
+            foundTracks?.isEmpty() == true -> {
+                Log.d("TEST", "isEmpty")
+                renderState(
+                    SearchScreenState.Empty
+                )
+            }
+
+            else -> {
+                renderState(SearchScreenState.Content(tracks = tracks))
             }
         }
-        )
     }
 
     fun onClickedTrack(track: List<Track>) {

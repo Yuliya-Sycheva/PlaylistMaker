@@ -14,7 +14,7 @@ import org.koin.dsl.module
 val interactorModule = module {
     single<TrackInteractor> {
         Log.d("TEST", "TrackInteractor_Module")
-        TrackInteractorImpl(repository = get(), executor = get())
+        TrackInteractorImpl(repository = get())
     }
 
     factory<PlayerInteractor> {

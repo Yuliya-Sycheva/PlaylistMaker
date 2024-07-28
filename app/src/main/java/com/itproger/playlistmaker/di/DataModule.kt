@@ -14,8 +14,6 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import java.util.concurrent.Executor
-import java.util.concurrent.Executors
 
 private const val SEARCH_HISTORY_PREFERENCES = "playlist_maker_search_history_preferences"
 private const val iTunesBaseUrl = "https://itunes.apple.com"
@@ -53,10 +51,6 @@ val dataModule = module {
     single<NetworkClient> {
         Log.d("TEST", "RetrofitNetworkClient_Module")
         RetrofitNetworkClient(api = get(), context = androidContext())
-    }
-
-    single<Executor> {
-        Executors.newCachedThreadPool()
     }
 
     factory<MediaPlayer> {
