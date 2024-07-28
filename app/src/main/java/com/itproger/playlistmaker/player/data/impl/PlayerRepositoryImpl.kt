@@ -12,8 +12,6 @@ class PlayerRepositoryImpl(private val mediaPlayer: MediaPlayer) : PlayerReposit
         const val MISTAKE = "Mistake"
     }
 
-    override val playerDuration: Int
-        get() = mediaPlayer.duration
     override val playerCurrentPosition: Int
         get() = mediaPlayer.currentPosition
 

@@ -7,9 +7,14 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.itproger.playlistmaker.search.domain.api.TrackInteractor
 import com.itproger.playlistmaker.search.domain.models.Track
 import com.itproger.playlistmaker.search.ui.models.SearchScreenState
+import com.itproger.playlistmaker.utils.debounce
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class TracksSearchViewModel(
     private val trackInteractor: TrackInteractor
@@ -20,7 +25,12 @@ class TracksSearchViewModel(
         private val SEARCH_REQUEST_TOKEN = Any()
     }
 
-    private val handler = Handler(Looper.getMainLooper())
+    private var searchDebounceJob: Job? = null
+//    private val trackSearchDebounce =      //    &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+//        debounce<String>(SEARCH_DEBOUNCE_DELAY, viewModelScope, true) {
+//        changedText -> searchTrack(changedText)
+//        }
+
 
     private val stateLiveData = MutableLiveData<SearchScreenState>()
     fun observeState(): LiveData<SearchScreenState> = stateLiveData
@@ -28,7 +38,7 @@ class TracksSearchViewModel(
     private var latestSearchText: String? = null
 
     override fun onCleared() {
-        handler.removeCallbacksAndMessages(SEARCH_REQUEST_TOKEN)
+        searchDebounceJob?.cancel()
     }
 
     fun searchDebounce(changedText: String) {
@@ -36,16 +46,13 @@ class TracksSearchViewModel(
             return
         }
         this.latestSearchText = changedText
-        handler.removeCallbacksAndMessages(SEARCH_REQUEST_TOKEN)
 
-        val searchRunnable = Runnable { searchTrack(changedText) }
-
-        val postTime = SystemClock.uptimeMillis() + SEARCH_DEBOUNCE_DELAY
-        handler.postAtTime(
-            searchRunnable,
-            SEARCH_REQUEST_TOKEN,
-            postTime,
-        )
+        searchDebounceJob?.cancel()
+        searchDebounceJob = viewModelScope.launch {
+            delay(SEARCH_DEBOUNCE_DELAY)
+            searchTrack(changedText)
+        }
+        //trackSearchDebounce(changedText) //&&&&&&&&&&&&&&&&&&&&&&&
     }
 
     fun searchTrack(newSearchText: String) {
@@ -54,7 +61,9 @@ class TracksSearchViewModel(
             return
         }
 
-        handler.removeCallbacksAndMessages(SEARCH_REQUEST_TOKEN)  //чтобы не происходил повторный поиск при нажатии на галочку
+        searchDebounceJob?.cancel()  //чтобы не происходил повторный поиск при нажатии на галочку, потому не стала исп-ть debounce()
+        //???????????
+      //  handler.removeCallbacksAndMessages(SEARCH_REQUEST_TOKEN)  //чтобы не происходил повторный поиск при нажатии на галочку
 
         renderState(SearchScreenState.Loading)
 

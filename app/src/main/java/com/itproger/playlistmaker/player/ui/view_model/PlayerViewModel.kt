@@ -9,11 +9,15 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.itproger.playlistmaker.player.domain.interactor.PlayerInteractor
 import com.itproger.playlistmaker.player.ui.models.PlayerStateInterface
 import com.itproger.playlistmaker.search.domain.models.Track
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -23,50 +27,26 @@ class PlayerViewModel(
 ) : ViewModel() {
 
     private companion object {
-        const val DELAY = 500L
-        const val TRACK_FINISH = 29_900L
+        const val DELAY = 300L
         const val MISTAKE = "Mistake"
     }
 
-    private val mainThreadHandler = Handler(Looper.getMainLooper())
+    private var timerJob: Job? = null
 
     private val stateLiveData = MutableLiveData<PlayerStateInterface>()
     fun observeState(): LiveData<PlayerStateInterface> = stateLiveData
 
     private fun startTimer() {
-        mainThreadHandler?.postDelayed(
-            object : Runnable {
-                override fun run() {
-                    Log.d(MISTAKE, "Timer")
-                    val maxTrackDuration: Long =
-                        if (playerInteractor.playerDuration > TRACK_FINISH) {
-                            TRACK_FINISH
-                        } else {
-                            (playerInteractor.playerDuration.toLong())
-                        }
+        timerJob = viewModelScope.launch {
+            while (playerInteractor.isPlaying()) {
+                delay(DELAY)
+                stateLiveData.postValue(PlayerStateInterface.UpdatePlayingTime(getCurrentPlayerPosition()))
+            }
+        }
+    }
 
-                    if (playerInteractor.playerCurrentPosition < maxTrackDuration) {
-                        renderState(
-                            PlayerStateInterface.UpdatePlayingTime(
-                                SimpleDateFormat(
-                                    "mm:ss",
-                                    Locale.getDefault()
-                                ).format(playerInteractor.playerCurrentPosition)
-                            )
-                        )
-                    } else {
-                        renderState((PlayerStateInterface.Prepare))
-                    }
-                    // И снова планируем то же действие через пол секунды
-                    mainThreadHandler?.postDelayed(
-                        this,
-                        DELAY,
-                    )
-
-                }
-            },
-            DELAY
-        )
+    private fun getCurrentPlayerPosition(): String {
+        return SimpleDateFormat("mm:ss", Locale.getDefault()).format(playerInteractor.playerCurrentPosition) ?: "00:00"
     }
 
     private fun renderState(state: PlayerStateInterface) {
@@ -82,7 +62,7 @@ class PlayerViewModel(
             },
             onPlayerCompletion = {
                 renderState(PlayerStateInterface.Prepare)
-                mainThreadHandler?.removeCallbacksAndMessages(null)
+                timerJob?.cancel()
                 Log.d(MISTAKE, "onPlayerCompletion")
             }
         )
@@ -98,7 +78,7 @@ class PlayerViewModel(
     fun pausePlayer() {
         renderState(PlayerStateInterface.Pause)
         playerInteractor.pausePlayer()
-        mainThreadHandler?.removeCallbacksAndMessages(null)
+        timerJob?.cancel()
         Log.d(MISTAKE, "Pause")
     }
 

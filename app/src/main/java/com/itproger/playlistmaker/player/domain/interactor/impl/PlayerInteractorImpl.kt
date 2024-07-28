@@ -9,8 +9,6 @@ class PlayerInteractorImpl(
     private var playerRepository: PlayerRepository
 ) : PlayerInteractor {
 
-    override val playerDuration: Int
-        get() = playerRepository.playerDuration
     override val playerCurrentPosition: Int
         get() = playerRepository.playerCurrentPosition
 
