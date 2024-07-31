@@ -1,31 +1,27 @@
 package com.itproger.playlistmaker.search.ui
 
-import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.itproger.playlistmaker.R
 import com.itproger.playlistmaker.databinding.FragmentSearchBinding
-import com.itproger.playlistmaker.player.ui.PlayerActivity
 import com.itproger.playlistmaker.search.domain.models.Track
 import com.itproger.playlistmaker.search.ui.adapters.TrackAdapter
 import com.itproger.playlistmaker.search.ui.models.SearchScreenState
 import com.itproger.playlistmaker.search.ui.view_model.TracksSearchViewModel
+import com.itproger.playlistmaker.utils.debounce
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchFragment : Fragment() {
@@ -33,7 +29,7 @@ class SearchFragment : Fragment() {
     private companion object {
         const val SEARCH_TEXT = "SEARCH_TEXT"
         const val CLICKED_TRACK: String = "clicked_track"
-        const val CLICK_DEBOUNCE_DELAY = 1000L
+        const val CLICK_DEBOUNCE_DELAY = 300L
     }
 
     private var _binding: FragmentSearchBinding? = null
@@ -41,7 +37,7 @@ class SearchFragment : Fragment() {
 
     private val viewModel by viewModel<TracksSearchViewModel>()
 
-    private val handler = Handler(Looper.getMainLooper())
+    private lateinit var openPlayerDebounce: (Track) -> Unit
 
     private var isClickAllowed = true
     private var textWatcher: TextWatcher? = null
@@ -49,19 +45,16 @@ class SearchFragment : Fragment() {
     private lateinit var searchAdapter: TrackAdapter
     private lateinit var historyAdapter: TrackAdapter
 
-    private val historyTrackClickListener: (Track) -> Unit =
-        { clickedTrack ->
-            openPlayer(clickedTrack)
-        }
+    private val historyTrackClickListener: (Track) -> Unit = { clickedTrack ->
+        openPlayerDebounce(clickedTrack)
+    }
 
-    private val currentTrackClickListener: (Track) -> Unit =
-        { clickedTrack ->
-            openPlayer(clickedTrack)
-        }
+    private val currentTrackClickListener: (Track) -> Unit = { clickedTrack ->
+        openPlayerDebounce(clickedTrack)
+    }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentSearchBinding.inflate(inflater, container, false)
 
@@ -71,9 +64,7 @@ class SearchFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        Log.d("TEST", "onCreate_start")
         viewModel.observeState().observe(viewLifecycleOwner) {
-            Log.d("TEST", "render")
             render(it)
         }
 
@@ -99,8 +90,7 @@ class SearchFragment : Fragment() {
             if (hasFocus && binding.query.text.isEmpty()) {
                 val historyTracks = viewModel.readTracksFromHistory().toMutableList()
                 updateHistoryList(historyTracks)
-                binding.historyLayout.isVisible =
-                    historyTracks.isNotEmpty()
+                binding.historyLayout.isVisible = historyTracks.isNotEmpty()
             } else {
                 binding.historyLayout.isVisible = false
             }
@@ -145,8 +135,7 @@ class SearchFragment : Fragment() {
         }
 
         binding.query.addTextChangedListener(simpleTextWatcher)
-        savedInstanceState?.getString(SearchFragment.SEARCH_TEXT)
-            ?.let {
+        savedInstanceState?.getString(SearchFragment.SEARCH_TEXT)?.let {
                 binding.query.setText(it)
             }
 
@@ -161,6 +150,17 @@ class SearchFragment : Fragment() {
             binding.historyLayout.isVisible = false
             historyAdapter.notifyDataSetChanged()
         }
+
+        openPlayerDebounce = debounce<Track>(
+            CLICK_DEBOUNCE_DELAY, viewLifecycleOwner.lifecycleScope, false
+        ) { clickedTrack ->
+            viewModel.onClickedTrack(listOf(clickedTrack))
+            historyAdapter.notifyDataSetChanged()
+            findNavController().navigate(
+                R.id.action_searchFragment_to_playerActivity,
+                bundleOf(CLICKED_TRACK to clickedTrack)
+            )
+        }
     } // конец onViewCreated()
 
     override fun onResume() {
@@ -174,17 +174,6 @@ class SearchFragment : Fragment() {
         _binding = null
     }
 
-    private fun openPlayer(clickedTrack: Track) {
-        if (clickDebounce()) {
-            viewModel.onClickedTrack(listOf(clickedTrack))
-            historyAdapter.notifyDataSetChanged()
-            findNavController().navigate(
-                R.id.action_searchFragment_to_playerActivity,
-                bundleOf(CLICKED_TRACK to clickedTrack)
-            )
-        }
-    }
-
     //кнопка "Крестик"
     private fun clearButtonVisibility(s: CharSequence?): Boolean {
         return !s.isNullOrEmpty()
@@ -193,15 +182,6 @@ class SearchFragment : Fragment() {
     override fun onDestroy() {
         super.onDestroy()
         textWatcher?.let { binding.query.removeTextChangedListener(it) }
-    }
-
-    private fun clickDebounce(): Boolean {
-        val current = isClickAllowed
-        if (isClickAllowed) {
-            isClickAllowed = false
-            handler.postDelayed({ isClickAllowed = true }, SearchFragment.CLICK_DEBOUNCE_DELAY)
-        }
-        return current
     }
 
     private fun render(state: SearchScreenState) {
@@ -213,7 +193,7 @@ class SearchFragment : Fragment() {
             }
 
             is SearchScreenState.Error -> showError(state.errorMessage)
-            is SearchScreenState.Empty -> showEmpty()   //(state.message)
+            is SearchScreenState.Empty -> showEmpty()
             is SearchScreenState.History -> showHistory()
             else -> {}
         }

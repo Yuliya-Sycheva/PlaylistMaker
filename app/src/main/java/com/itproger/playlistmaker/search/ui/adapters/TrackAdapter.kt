@@ -24,7 +24,6 @@ class TrackAdapter(
         val currentTrack = trackList[position]
         holder.bind(currentTrack)
         holder.itemView.setOnClickListener {
-            // Toast.makeText(holder.itemView.context, "Нажали на трек!", Toast.LENGTH_SHORT).show()
             onClickListener(currentTrack)
 
         }
