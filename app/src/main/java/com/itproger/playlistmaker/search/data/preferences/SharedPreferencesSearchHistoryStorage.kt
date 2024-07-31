@@ -1,7 +1,6 @@
 package com.itproger.playlistmaker.search.data.preferences
 
 import android.content.SharedPreferences
-import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.itproger.playlistmaker.search.domain.models.Track
@@ -24,7 +23,6 @@ class SharedPreferencesSearchHistoryStorage(
         }
 
         historyTracks.addAll(0, track)
-        Log.d("Test", "Сохраняю трек $track")
 
         if (historyTracks.size > maxCountOfTracksInHistory) {
             historyTracks.removeAt(maxCountOfTracksInHistory)
@@ -38,7 +36,6 @@ class SharedPreferencesSearchHistoryStorage(
 
     override fun readTracksFromHistory(): List<Track> {
         val json = sharedPreferences.getString(HISTORY_TRACKS_LIST_KEY, null) ?: return emptyList()
-        Log.d("Test", "Читаю трек")
         return gson.fromJson(json, object : TypeToken<List<Track>>() {}.type)
     }
 

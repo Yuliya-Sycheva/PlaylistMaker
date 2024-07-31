@@ -3,7 +3,6 @@ package com.itproger.playlistmaker.player.ui.view_model
 import android.app.Application
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -28,7 +27,6 @@ class PlayerViewModel(
 
     private companion object {
         const val DELAY = 300L
-        const val MISTAKE = "Mistake"
     }
 
     private var timerJob: Job? = null
@@ -58,12 +56,10 @@ class PlayerViewModel(
             track,
             onPreparedListener = {
                 renderState(PlayerStateInterface.Prepare)
-                Log.d(MISTAKE, "onPreparedListener")
             },
             onPlayerCompletion = {
                 renderState(PlayerStateInterface.Prepare)
                 timerJob?.cancel()
-                Log.d(MISTAKE, "onPlayerCompletion")
             }
         )
     }
@@ -72,19 +68,16 @@ class PlayerViewModel(
         renderState(PlayerStateInterface.Play)
         playerInteractor.startPlayer()
         startTimer()
-        Log.d(MISTAKE, "Start")
     }
 
     fun pausePlayer() {
         renderState(PlayerStateInterface.Pause)
         playerInteractor.pausePlayer()
         timerJob?.cancel()
-        Log.d(MISTAKE, "Pause")
     }
 
     fun releasePlayer() {
         playerInteractor.releasePlayer()
-        Log.d(MISTAKE, "Destroy")
     }
 
     fun isPlaying(): Boolean {

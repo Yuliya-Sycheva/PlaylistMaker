@@ -22,7 +22,6 @@ private const val THEME_PREFERENCES = "playlist_maker_theme_preferences"
 val dataModule = module {
 
     single<ITunesApi> {
-        Log.d("TEST", "ITunesApi_Module")
         Retrofit.Builder()
             .baseUrl(iTunesBaseUrl)
             .addConverterFactory(GsonConverterFactory.create())
@@ -30,8 +29,7 @@ val dataModule = module {
             .create(ITunesApi::class.java)
     }
 
-    single<SharedPreferences> {   //добавила в <>
-        Log.d("TEST", "getSharedPreferences_Module")
+    single<SharedPreferences> {
         androidContext().getSharedPreferences(
             SEARCH_HISTORY_PREFERENCES,
             Context.MODE_PRIVATE
@@ -39,17 +37,14 @@ val dataModule = module {
     }
 
     single {
-        Log.d("TEST", " Gson_Module")
         Gson()
     }
 
     single<SearchHistoryStorage> {
-        Log.d("TEST", "SharedPreferencesSearchHistoryStorage_Module")
-        SharedPreferencesSearchHistoryStorage(sharedPreferences = get(), gson = get())  //
+        SharedPreferencesSearchHistoryStorage(sharedPreferences = get(), gson = get())
     }
 
     single<NetworkClient> {
-        Log.d("TEST", "RetrofitNetworkClient_Module")
         RetrofitNetworkClient(api = get(), context = androidContext())
     }
 
@@ -58,7 +53,6 @@ val dataModule = module {
     }
 
     single {
-        Log.d("TEST", "getSharedPreferences_Settings_Module")
         androidContext().getSharedPreferences(
             THEME_PREFERENCES,
             Context.MODE_PRIVATE

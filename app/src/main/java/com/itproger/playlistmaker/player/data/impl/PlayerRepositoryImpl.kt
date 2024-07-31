@@ -25,11 +25,9 @@ class PlayerRepositoryImpl(private val mediaPlayer: MediaPlayer) : PlayerReposit
             mediaPlayer.prepareAsync()
             mediaPlayer.setOnPreparedListener {
                 onPreparedListener.invoke()
-                Log.d(MISTAKE, "onPreparedListener.invoke()")
             }
             mediaPlayer.setOnCompletionListener {
                 onPlayerCompletion.invoke()
-                Log.d(MISTAKE, "localOnPlayerCompletion.invoke()")
             }
         } else {
             Log.e(MISTAKE, "Preview URL is null")  //нужно это добавлять?
